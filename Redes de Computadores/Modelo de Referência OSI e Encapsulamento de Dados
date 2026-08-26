@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+  <html lang="pt-BR">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 02 - Introdução ao CSS</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav><a href="../index.html">&larr; Voltar para o início</a></nav>
+
+<h1>Aula 02 - Introdução ao CSS</h1>
+
+<h2>O que é CSS</h2>
+<p>CSS (Cascading Style Sheets) é a linguagem usada para estilizar páginas HTML: cores, fontes, espaçamento, layout etc. Enquanto o HTML cuida da estrutura e do conteúdo, o CSS cuida da aparência.</p>
+
+<h2>Como conectar o CSS ao HTML</h2>
+<p>A forma mais organizada é criar um arquivo .css separado e linká-lo dentro do &lt;head&gt; da página:</p>
+  <pre><code>&lt;link rel="stylesheet" href="style.css"&gt;</code></pre>
+  <p>Também é possível escrever CSS direto dentro da página com uma tag &lt;style&gt; no &lt;head&gt;, ou aplicar um estilo pontual num elemento com o atributo style="...". Mas usar um arquivo separado, como o style.css deste projeto, é o jeito mais fácil de manter organizado.</p>
+
+  <h2>Sintaxe básica</h2>
+<p>Uma regra de CSS segue esse formato:</p>
+  <pre><code>seletor {
+    propriedade: valor;
+  propriedade: valor;
+}</code></pre>
+  <p>Por exemplo, para deixar todos os parágrafos azuis:</p>
+  <pre><code>p {
+    color: blue;
+}</code></pre>
+
+  <h2>Principais seletores vistos nessa aula</h2>
+<ul>
+<li><code>tag</code> - seleciona todos os elementos daquela tag, ex: <code>p</code> pega todo mundo <code>&lt;p&gt;</code></li>
+  <li><code>.classe</code> - seleciona elementos com <code>class="classe"</code></li>
+<li><code>#id</code> - seleciona o elemento único com <code>id="id"</code></li>
+<li><code>*</code> - seleciona todos os elementos da página</li>
+</ul>
+
+<h2>Exemplo prático</h2>
+<p>Este próprio site usa um arquivo <code>style.css</code> compartilhado. Repare, por exemplo, como os blocos de código acima aparecem com fundo cinza - isso vem de uma regra parecida com esta no style.css:</p>
+  <pre><code>code, pre {
+  background: #f4f4f4;
+  border-radius: 4px;
+}</code></pre>
+
+  <h2>Minhas anotações</h2>
+<p>Espaço livre para escrever o que eu quiser destacar sobre essa aula.</p>
+</body>
+</html>
+
