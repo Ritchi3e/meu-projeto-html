@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 02 - Modelo de Referência OSI</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav><a href="../index.html">&larr; Voltar para o início</a></nav>
+
+<h1>Aula 02 - Modelo de Referência OSI</h1>
+
+<h2>Nesta aula</h2>
+<ul>
+<li>Modelo de Referência OSI</li>
+<li>Encapsulamento de dados</li>
+</ul>
+
+<h2>O que são protocolos de rede</h2>
+<p>A comunicação entre os dispositivos depende de regras e padrões que definem como os dados serão enviados, recebidos e interpretados — essas regras são implementadas através dos protocolos.</p>
+<p>Existem diversos protocolos, cada um projetado para uma finalidade específica:</p>
+<ul>
+<li><code>HTTP</code>, <code>HTTPS</code>, <code>FTP</code> e <code>SFTP</code>: transferência de dados.</li>
+<li><code>RDP</code>, <code>SSH</code>: acesso remoto.</li>
+<li><code>DNS</code>: resolução de nomes.</li>
+<li><code>SIP</code>: comunicação de voz.</li>
+<li><code>ICMP</code>: diagnóstico de rede.</li>
+<li><code>TCP</code> e <code>UDP</code>: transporte de dados (informações).</li>
+<li><code>SMTP</code>/<code>IMAP</code>: envio e encaminhamento de e-mails, e receber/organizar e-mails, respectivamente.</li>
+<li><code>SNMP</code>: gerenciamento de dispositivos.</li>
+</ul>
+<p>Não precisamos decorar os protocolos agora — primeiro vamos entender onde eles se encaixam. Um conjunto de protocolos utilizados em uma comunicação de dados também é conhecido como <strong>pilha de protocolos</strong>, e é essencial para garantir o bom funcionamento entre diferentes sistemas e redes.</p>
+
+<h2>Contexto histórico: por que o Modelo OSI surgiu</h2>
+<p>O desenvolvimento do modelo OSI ocorreu principalmente durante a década de 1970 e início dos anos 1980, e foi formalizado pela ISO em 1984, na referência clássica ISO 7498-1.</p>
+<p>Na década de 80, as tecnologias de rede que surgiram foram criadas utilizando diferentes implementações de hardware e software. Cada empresa que criava hardwares e softwares para as redes utilizava seus próprios padrões, o que acabava gerando competição entre as companhias.</p>
+<p>Consequentemente, muitas das novas tecnologias que frequentemente surgiam, fabricadas pelas empresas, eram incompatíveis umas com as outras — deixando cada vez mais difícil para as redes conseguirem se comunicar utilizando tecnologias distintas. Era frequentemente necessário remover o equipamento antigo para implementar um novo equipamento.</p>
+<p>Surgiu então a necessidade de padronizar as redes, com um modelo que fosse fácil de usar e fácil de expandir. Assim nasceu o <strong>Modelo de Referência OSI</strong>.</p>
+
+<h2>O que é o Modelo OSI</h2>
+<p>Foi criado em 1971 e formalizado em 1983. É um padrão normativo para protocolos de comunicação entre os dispositivos que compõem uma rede local.</p>
+<p><strong>OSI</strong> é a sigla de <em>Open Systems Interconnection</em>, que podemos interpretar como "sistemas abertos à comunicação com outros sistemas".</p>
+<p>O objetivo principal era ter uma base de referência e também desenvolver os protocolos envolvidos em cada camada. Cada camada tem responsabilidades e protocolos que trabalham em cima dela.</p>
+
+<h2>Princípios usados na criação do modelo</h2>
+<p>Os princípios básicos aplicados na criação do Modelo de Referência OSI, de acordo com Tanenbaum (2011), são:</p>
+<ul>
+<li>Cada camada precisa ser criada onde houver um grau de necessidade diferente de abstração.</li>
+<li>Cada camada deve executar e desempenhar funções que estejam bem definidas.</li>
+<li>As funções de cada camada devem ser escolhidas tendo em vista os protocolos padronizados internacionalmente.</li>
+<li>Os limites de camadas devem ser escolhidos para minimizar o fluxo de informação pelas interfaces.</li>
+<li>O número de camadas deve ser grande o suficiente para que funções distintas não precisem ser colocadas desnecessariamente na mesma camada, mas pequeno o suficiente para que a arquitetura não se torne difícil de controlar.</li>
+</ul>
+
+<h2>Objetivos do Modelo OSI</h2>
+<ul>
+<li>Reduzir a complexidade dos dispositivos.</li>
+<li>Padronizar as interfaces de comunicação.</li>
+<li>Acelerar a linha de evolução.</li>
+<li>Simplificar o ensino e aprendizado.</li>
+</ul>
+
+<h2>As 7 camadas do Modelo OSI</h2>
+
+<h3>1. Física</h3>
+<p>Recebe e envia os bits brutos através do meio físico de transmissão.</p>
+<ul>
+<li>Cabos de par trançado.</li>
+<li>Fibra óptica.</li>
+<li>Conexões sem fio (Wireless, Bluetooth).</li>
+<li>Ethernet, USB e DSL.</li>
+</ul>
+
+<h3>2. Enlace de Dados</h3>
+<p>Garante a transferência confiável de dados entre dois nós diferentemente conectados, corrigindo erros que possam ocorrer na camada física.</p>
+<ul>
+<li>Organização dos dados em frames e controle de acesso ao meio físico.</li>
+<li>Protocolos: Ethernet e PPP.</li>
+<li>Switches de Layer 2, que operam exclusivamente para encaminhar os frames com base nos endereços MAC dos dispositivos.</li>
+</ul>
+
+<h3>3. Rede</h3>
+<p>É responsável pelo endereçamento lógico e pelo roteamento dos pacotes de dados entre as diferentes redes. É nesta camada que se determina o caminho que os dados irão seguir para alcançar o seu destino.</p>
+<ul>
+<li>Roteadores.</li>
+<li>Protocolos: IP, ICMP, IPSec.</li>
+</ul>
+
+<h3>4. Transporte</h3>
+<p>É a camada que possui transferências confiáveis de dados de ponta a ponta, além de gerenciar o controle do fluxo e a correção dos erros de ponta a ponta.</p>
+<ul>
+<li><strong>TCP</strong>: Transmission Control Protocol.</li>
+<li><strong>UDP</strong>: User Datagram Protocol.</li>
+<li><strong>SCTP</strong>: Stream Control Transmission Protocol.</li>
+</ul>
+
+<h3>5. Sessão</h3>
+<p>Gerencia e controla as conexões e sessões ativas. É responsável por sincronizar a comunicação entre as aplicações e também por gerenciar a troca de dados.</p>
+<p>É responsável por estabelecer uma sessão de login em um servidor e manter a conexão ativa até o logout intencional ou por timeout, de acordo com alguma regra de negócio configurada.</p>
+<p>Protocolos e tecnologias associadas: NetBIOS, RPC, PPTP (Point to Point Tunneling Protocol), L2TP, IPSEC.</p>
+
+<h3>6. Apresentação</h3>
+<p>Responsável por traduzir os dados para um formato que a camada de aplicação consiga entender e aceitar: criptografia, compressão de dados e conversão de códigos de caracteres.</p>
+<p><strong>Exemplos:</strong></p>
+<ul>
+<li>Conversão de dados do formato EBCDIC para ASCII.</li>
+<li>Criptografia de dados para transmissão segura da informação.</li>
+</ul>
+<p><strong>Protocolos e tecnologias associadas:</strong></p>
+<ul>
+<li>SSL (Secure Sockets Layer)</li>
+<li>TLS (Transport Layer Security)</li>
+<li>JPEG, MPEG (formatos de compressão de dados)</li>
+</ul>
+
+<h3>7. Aplicação</h3>
+<p>É a camada mais próxima do usuário final: é responsável por fornecer os serviços de rede que estão diretamente relacionados às aplicações. Permite que o usuário interaja com a rede mesmo não tendo um conhecimento técnico elevado, através dos softwares de aplicação.</p>
+<p><strong>Exemplos:</strong> navegadores web para acesso a páginas da internet, serviços de e-mail, stream de vídeos.</p>
+<p><strong>Protocolos e tecnologias associadas:</strong></p>
+<ul>
+<li>HTTP / HTTPS (Hypertext Transfer Protocol Secure)</li>
+<li>SFTP (Secure File Transfer Protocol)</li>
+<li>SMTP (Simple Mail Transfer Protocol)</li>
+<li>DNS (Domain Name System)</li>
+</ul>
+
+<h2>Atividade prática: comandos de rede</h2>
+<p>Abra o CMD da sua máquina e realize as seguintes ações:</p>
+<pre><code>ipconfig
+ipconfig /all
+ping 8.8.8.8
+ping google.com.br
+tracert google.com.br
+nslookup
+uol.com.br</code></pre>
+<p>O comando <code>tracert</code> mostra a rota até chegar ao destino informado. Já o <code>nslookup</code> serve para verificar quem está resolvendo os domínios para você.</p>
+
+<h3>Entendendo o resultado do nslookup: "Não é resposta autoritativa"</h3>
+<p>Na prática, isso significa que o servidor DNS possui a informação, mas não é ele quem gerencia e controla isso — ele apenas responde porque tem a informação para responder à pergunta "quem é uol.com.br?". O destino de <code>uol.com.br</code> é o servidor <code>200.147.35.149</code>.</p>
+
+<h2>Encapsulamento de dados</h2>
+<p>O encapsulamento é responsável por empacotar as informações através do uso dos protocolos, antes que essas informações sejam trafegadas pela rede. À medida que os dados vão trafegando pelas camadas do Modelo de Referência OSI, cada camada pode adicionar informações de controle e gerenciamento dos seus dados.</p>
+<p>As informações adicionais são chamadas de <strong>cabeçalhos</strong> (headers) e, em alguns casos, de <strong>trailers</strong>. Esse processo é o encapsulamento de dados.</p>
+
+<h3>FCS (Frame Check Sequence)</h3>
+<p>O FCS é um mecanismo de verificação da sequência de frames — de forma simplificada, é um cálculo em cima dos dados que serão transmitidos. Se a sequência for alterada por algum motivo, a informação é considerada corrompida durante a transmissão.</p>
+<p>O receptor recebe a informação FCS de origem e, quando o pacote chega, ele pode realizar o cálculo dos frames através do FCS e verificar a sequência recebida, para confirmar se está batendo com a origem.</p>
+
+<h3>Como funciona na transmissão de dados</h3>
+<ul>
+<li>As camadas recebem as informações da camada superior, à medida que os dados descem pelas camadas.</li>
+<li>Cada camada acrescenta ao pacote de dados recebido as informações pelas quais a própria camada é responsável.</li>
+<li>Os dados são repassados já encapsulados com as informações adicionais, para a próxima camada.</li>
+</ul>
+
+<h3>Cabeçalho do Quadro (Camada 2 - Enlace de Dados)</h3>
+<p>Aqui os dados são organizados em estruturas que chamamos de <strong>frames</strong> (quadros). O cabeçalho do quadro é composto por:</p>
+<ul>
+<li><strong>Endereço MAC de Origem</strong>: identifica o dispositivo que enviou a informação.</li>
+<li><strong>Endereço MAC de Destino</strong>: identifica o dispositivo destinatário da informação.</li>
+</ul>
+
+<h3>Trailer do Quadro</h3>
+<p><strong>FCS (Frame Check Sequence)</strong>: é um código de verificação que permite ao receptor identificar possíveis erros que possam ter ocorrido durante a transmissão dos dados, garantindo que os dados sejam entregues corretamente entre dispositivos conectados na mesma rede física.</p>
+
+<h3>Cabeçalho de Rede (Camada 3 - Rede)</h3>
+<p>Nesta camada os dados são organizados em pacotes. Cada pacote possui um cabeçalho que contém informações cruciais para o roteamento e entrega dos dados através das diferentes redes existentes:</p>
+<ul>
+<li><strong>Endereço IP de origem</strong>: identifica o endereço lógico do dispositivo de origem.</li>
+<li><strong>Endereço IP de destino</strong>: identifica o endereço lógico do dispositivo de destino.</li>
+<li><strong>Informações de roteamento</strong>: auxiliam os roteadores a encaminharem o pacote pelo melhor caminho até alcançar o destino final.</li>
+<li><strong>Informações de fragmentação</strong>: permitem a reconstrução correta do pacote, caso ele tenha sido fragmentado durante a transmissão por algum motivo.</li>
+</ul>
+<p>Esses cabeçalhos são fundamentais para que dispositivos como roteadores consigam direcionar os pacotes através das redes interconectadas, até alcançarem o destino correto.</p>
+
+<h3>Exemplo completo de encapsulamento, camada por camada</h3>
+<p>À medida que os dados são preparados para a transmissão, cada camada do Modelo OSI adiciona a sua própria informação (cabeçalho e, quando aplicável, trailer) à unidade de dados recebida da camada superior/anterior. Por exemplo:</p>
+<ul>
+<li><strong>Camada de Aplicação (C7)</strong>: gera os dados originais que serão transmitidos.</li>
+<li><strong>Camada de Transporte (C4)</strong>: encapsula os dados em segmentos, adicionando um cabeçalho com informações como número de porta e controle de fluxo.</li>
+<li><strong>Camada de Rede (C3)</strong>: encapsula os segmentos em pacotes, adicionando o cabeçalho de rede, como endereço IP e informações de roteamento.</li>
+<li><strong>Camada de Enlace (C2)</strong>: encapsula os pacotes em frames, adicionando o cabeçalho e o trailer do frame, com endereço MAC e informações para verificação de erros.</li>
+<li><strong>Camada Física (C1)</strong>: converte os frames em sinais elétricos, ópticos ou de rádio para transmissão pelo meio físico.</li>
+</ul>
+
+<h2>Resumo</h2>
+<p>O Modelo de Referência OSI é uma estrutura conceitual, de referência e estudos, desenvolvida pela ISO. O modelo descreve funções de um sistema de comunicação de redes de computadores, divididas em 7 camadas. Cada camada tem responsabilidades distintas e pode interagir com as camadas adjacentes, facilitando a padronização e o funcionamento de diferentes sistemas e tecnologias.</p>
+
+</body>
+</html>
