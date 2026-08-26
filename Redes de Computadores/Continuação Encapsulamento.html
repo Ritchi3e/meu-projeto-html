@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 03 - Continuação: Encapsulamento de Dados</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav><a href="../index.html">&larr; Voltar para o início</a></nav>
+
+<h1>Aula 02 - Continuação da Aula 02: Encapsulamento de Dados</h1>
+
+<h2>Nesta aula</h2>
+<ul>
+<li>Prática</li>
+<li>Encapsulamento de Dados</li>
+</ul>
+
+<h2>Revisão prática: comandos de rede</h2>
+<p>Abra o CMD da sua máquina e realize as seguintes ações:</p>
+<pre><code>ipconfig
+ipconfig /all
+ping 8.8.8.8
+ping google.com.br
+tracert google.com.br
+nslookup
+uol.com.br</code></pre>
+<p>Digite o comando <code>ipconfig</code> e depois repita o comando adicionando o parâmetro no final: <code>ipconfig /all</code>. Em seguida, teste sua comunicação com o comando <code>ping</code> (<code>ping 8.8.8.8</code> e <code>ping google.com.br</code>, ou qualquer outro site/domínio). Também verifique a rota até chegar ao destino com <code>tracert google.com.br</code> (ou o site/domínio usado no passo anterior).</p>
+<p>Por fim, execute um <code>nslookup</code> para verificar quem está resolvendo os domínios para você.</p>
+
+<h3>Entendendo o resultado do nslookup: "Não é resposta autoritativa"</h3>
+<p>Na prática, o que isso significa? Basicamente, significa que o servidor DNS possui a informação, mas não é ele quem gerencia e controla isso — ele apenas responde porque tem a informação para responder à pergunta "quem é uol.com.br?". O destino de <code>uol.com.br</code> é o servidor <code>200.147.35.149</code>.</p>
+
+<h2>O que é o encapsulamento de dados</h2>
+<p>O encapsulamento é responsável por empacotar as informações através dos protocolos, antes que essas informações sejam trafegadas pela rede.</p>
+<p>À medida que os dados forem trafegando pelas camadas, cada camada pode adicionar informações — essas informações são para controle e gerenciamento dos dados. Essas informações adicionais são chamadas de <strong>cabeçalhos</strong> (headers) e <strong>trailers</strong>. Esse processo é o encapsulamento de dados.</p>
+
+<h2>FCS (Frame Check Sequence)</h2>
+<p>O FCS é um mecanismo de verificação da sequência de frames — resumidamente, é um cálculo matemático em cima dos dados que serão transmitidos. Se a sequência for alterada por qualquer motivo, a informação é considerada corrompida/comprometida durante a transmissão.</p>
+<p>O receptor recebe a informação do FCS de origem e, quando os pacotes chegam até ele, é possível realizar o cálculo através do mecanismo para verificar se a sequência recebida está batendo com a origem, e se nenhuma informação foi alterada no percurso.</p>
+
+<h2>Como funciona na transmissão de dados</h2>
+<ul>
+<li>As camadas recebem as informações da camada superior, à medida que os dados descem pelas camadas adjacentes.</li>
+<li>É acrescentado ao pacote de dados recebido as informações pelas quais a própria camada tem responsabilidade.</li>
+<li>Os dados são repassados/transmitidos já encapsulados com as informações adicionais, para a próxima camada.</li>
+</ul>
+
+<h2>Cabeçalho (Camada de Enlace)</h2>
+<p>Trabalha na camada de enlace, onde os dados são organizados em estruturas que chamamos de <strong>frames</strong>. É composto principalmente por:</p>
+<ul>
+<li><strong>Endereço MAC de origem</strong>: identificando o dispositivo que enviou a informação.</li>
+<li><strong>Endereço MAC de destino</strong>: identificando o dispositivo que receberá a informação.</li>
+</ul>
+
+<h3>Trailer FCS (Frame Check Sequence)</h3>
+<p>É um código de verificação que permite ao receptor identificar possíveis erros que possam ter ocorrido durante a transmissão dos dados, garantindo que os dados sejam entregues corretamente entre dispositivos conectados na mesma rede física.</p>
+
+<h2>Cabeçalho de Rede</h2>
+<p>Trabalha na camada 3 (Rede), e aqui os dados são organizados em pacotes. Cada pacote possui um cabeçalho que contém informações cruciais para o roteamento e entrega dos dados através das diferentes redes existentes. As informações incluem:</p>
+<ul>
+<li><strong>Endereço IP de origem</strong>: identifica o endereço lógico do dispositivo de origem.</li>
+<li><strong>Endereço IP de destino</strong>: identifica o endereço lógico do dispositivo de destino.</li>
+<li><strong>Informações de roteamento</strong>: servem para auxiliar os roteadores a encaminharem o pacote pelo melhor caminho até alcançar o destino final.</li>
+<li><strong>Informações de fragmentação</strong>: dados que permitem a reconstrução correta do pacote, caso ele tenha sido fragmentado durante a transmissão por algum motivo.</li>
+</ul>
+<p>Esses cabeçalhos são fundamentais para que os dispositivos, como roteadores, consigam direcionar os pacotes através das redes interconectadas até alcançarem o destino correto.</p>
+
+<h2>Encapsulamento, camada por camada</h2>
+<p>À medida que os dados são preparados para a transmissão, cada camada do Modelo OSI adiciona a sua própria informação (cabeçalho e, quando aplicável, trailer) à unidade de dados que foi recebida pela camada superior/anterior. Por exemplo:</p>
+<ul>
+<li><strong>Camada de Aplicação (C7)</strong>: gera os dados originais que serão transmitidos.</li>
+<li><strong>Camada de Transporte (C4)</strong>: encapsula os dados em segmentos, adicionando um cabeçalho com informações como número de porta e controle de fluxo.</li>
+<li><strong>Camada de Rede (C3)</strong>: encapsula os segmentos em pacotes, adicionando o cabeçalho da rede, como endereço IP e informações de roteamento.</li>
+<li><strong>Camada de Enlace (C2)</strong>: encapsula os pacotes em frames, adicionando o cabeçalho e o trailer do frame, com endereço MAC e informações para verificação de erros.</li>
+<li><strong>Camada Física (C1)</strong>: converte os frames em sinais elétricos, ópticos ou de rádio para transmissão pelo meio físico.</li>
+</ul>
+
+<h2>Resumo</h2>
+<p>O Modelo de Referência OSI é uma estrutura mais conceitual, focada para estudos, que foi desenvolvida pela ISO. O modelo descreve funções de um sistema de comunicação de redes de computadores, divididas em 7 camadas. Cada camada possui responsabilidades distintas e pode interagir com as camadas adjacentes, facilitando assim a padronização e o funcionamento de diferentes sistemas e tecnologias.</p>
+
+</body>
+</html>

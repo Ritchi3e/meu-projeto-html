@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula 04 - Modelo TCP/IP e Endereçamento</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<nav><a href="../index.html">&larr; Voltar para o início</a></nav>
+
+<h1>Aula 03 - Modelo de Referência TCP/IP e Endereçamento</h1>
+
+<h2>Nesta aula</h2>
+<ul>
+<li>Modelo de Referência TCP/IP</li>
+<li>Principais protocolos</li>
+<li>IP, TCP</li>
+<li>Endereçamento IPv4 e IPv6</li>
+<li>Sub-redes</li>
+</ul>
+
+<h2>O que é o Modelo TCP/IP</h2>
+<p><strong>TCP</strong>: Transmission Control Protocol. <strong>IP</strong>: Internet Protocol.</p>
+<p>O TCP/IP é um modelo que também é utilizado com frequência para a estruturação de uma rede de computadores. É um modelo mais simples se comparado ao modelo OSI a nível de camadas.</p>
+<p>É muito utilizado hoje em dia e foi o principal responsável pela popularização da Internet. Foi criado pensando em grande escala e longa distância, onde pode haver vários caminhos para que a informação chegue ao seu destino.</p>
+<p>Uma das principais vantagens desse modelo é ser uma arquitetura aberta, ou seja, está disponível para qualquer um que queira adotar esse padrão, sem necessidade de pagar pelos direitos de uso.</p>
+
+<h2>Camada de Aplicação</h2>
+<p>É equivalente às camadas 5, 6 e 7 do Modelo OSI. É a camada responsável pela comunicação entre os aplicativos e a camada de transporte.</p>
+<p>As camadas, assim como no Modelo OSI, se comunicam umas com as outras através de portas, sendo que cada protocolo possui uma porta pré-definida por padrão.</p>
+
+<h3>Principais protocolos da camada de aplicação</h3>
+<ul>
+<li><strong>Telnet</strong>: protocolo de rede que permite comunicar-se e acessar remotamente os dispositivos (não utiliza criptografia e foi substituído pelo SSH).</li>
+<li><strong>SNMP</strong>: protocolo de rede para coletar e organizar as informações dos dispositivos de uma rede. Alguns dispositivos que suportam esse protocolo: roteadores, modem, switches L2 e L3, servidores, estações de trabalho e outros equipamentos IoT.</li>
+<li><strong>DNS</strong> (porta 53): protocolo essencial da internet, pois permite a resolução dos nomes de domínio — por exemplo, traduz o domínio <code>google.com.br</code> para o endereço IPv4 <code>142.251.129.3</code>, onde o serviço está hospedado.</li>
+<li><strong>SMTP</strong> (porta 587, em alguns casos porta 25): protocolo essencial para envio de e-mails na internet, podendo especificar um ou mais destinatários.</li>
+<li><strong>HTTP</strong> (porta 80): protocolo utilizado por navegadores de internet, sem criptografia — não é recomendado e foi substituído pelo HTTPS.</li>
+<li><strong>FTP</strong>: utiliza por padrão as portas <strong>20</strong> (transferência de arquivos) e <strong>21</strong> (informações de controle de dados).</li>
+<li><strong>HTTPS</strong> (porta 443): principal protocolo da internet atualmente, essencial para acesso a sites hospedados na internet — utiliza criptografia e certificados para garantir a segurança e a integridade dos dados trafegados.</li>
+<li><strong>POP3</strong> (porta 25 conforme a aula): protocolo responsável pelo recebimento de e-mails, controlando a conexão entre um servidor de e-mail e um cliente.</li>
+<li><strong>SSH</strong> (porta 22): protocolo de comunicação e acesso remoto aos dispositivos, de forma segura e criptografada.</li>
+</ul>
+
+<h2>Camada de Transporte</h2>
+<p>É equivalente à C4 (Camada de Transporte) do Modelo OSI. É responsável por transformar os dados das aplicações em pacotes segmentados, que serão transportados para a camada adjacente de internet.</p>
+<p>Realiza o gerenciamento <strong>end-to-end</strong> (fim a fim) entre os dispositivos, assegurando que a comunicação ocorrerá de forma confiável e ordenada por meio dos protocolos <strong>TCP</strong> e <strong>UDP</strong>.</p>
+
+<h3>TCP</h3>
+<p>Protocolo de transporte focado em garantir a entrega dos dados, ordenação e controle de fluxo. Oferece mecanismos de confirmação (ACK) para o recebimento dos dados, além de mecanismos para retransmissão dos dados perdidos. Possui uma latência maior, se comparado ao UDP.</p>
+
+<h4>Como funciona a conexão TCP</h4>
+<ul>
+<li><strong>Primeiro envio (SYN)</strong>: o remetente divide os pacotes em segmentos numerados sequencialmente e os envia ao destinatário, iniciando uma sincronização entre os dispositivos previamente (SYN).</li>
+<li><strong>Confirmação (SYN, ACK)</strong>: ao receber um segmento, o destinatário responde de volta (SYN ACK), indicando que recebeu o segmento com sucesso e informando qual é o próximo número esperado na sequência.</li>
+<li><strong>Janela deslizante (ACK)</strong>: responsável por gerenciar a quantidade de dados que podem ser enviados antes de receber a confirmação do remetente, servindo para evitar uma sobrecarga ao destinatário (enviando mais dados do que ele pode processar).</li>
+<li><strong>Temporizador de retransmissão</strong>: depois de enviar um segmento, o remetente inicia um temporizador aguardando a confirmação do destinatário. Se o ACK não for recebido dentro de um período específico, o segmento é retransmitido, presumindo-se que tenha ocorrido perda de informação/pacote.</li>
+</ul>
+
+<h3>UDP</h3>
+<p>É um protocolo de transporte que não verifica se o pacote chegou ao destino. É mais utilizado na transmissão de informações que "podem" ser perdidas, ou informações de controle — por exemplo: <strong>DNS, SNMP, VoIP, Jogos Online, Streaming de Vídeos</strong>. A vantagem é possuir uma latência menor, por não verificar se os pacotes estão chegando ao destino.</p>
+
+<h4>Reflexão: TCP ou UDP?</h4>
+<ul>
+<li>Ao realizar um download na internet, é utilizado qual protocolo? E por quê?</li>
+<li>E ao realizar uma chamada de vídeo ou chamada de voz pela internet, é utilizado qual protocolo?</li>
+</ul>
+<p>O <strong>TCP</strong> prioriza confiabilidade e integridade. O <strong>UDP</strong> prioriza velocidade e baixa latência.</p>
+
+<h2>Camada de Internet</h2>
+<p>É equivalente à camada 3 (Rede) do Modelo OSI. É responsável pelo roteamento dos pacotes entre os dispositivos, utilizando endereçamento IPv4 para identificar os dispositivos e realizar o roteamento correto.</p>
+<p>Alguns protocolos que operam nessa camada:</p>
+<ul>
+<li><strong>IP</strong> (Internet Protocol): utilizado pelo IPv4 e IPv6.</li>
+<li><strong>ICMP</strong> (Internet Control Message Protocol): utilizado para enviar mensagens de controle e realizar diagnósticos relacionados à comunicação IPv4, permitindo verificar a conectividade e informar problemas na entrega dos pacotes. É utilizado pelas ferramentas <code>ping</code> e <code>traceroute</code>/<code>tracert</code>.</li>
+<li><strong>ARP</strong>: tabela que faz o mapeamento dos endereços IPv4 para endereços físicos (MAC). É essencial para a comunicação em redes locais, permitindo que os dispositivos identifiquem o endereço físico uns dos outros, de acordo com o endereço IPv4.</li>
+<li><strong>RARP</strong>: função inversa do ARP — mapeia endereços físicos (MAC) para endereços lógicos (IPv4).</li>
+</ul>
+<p>Os pacotes de dados recebidos são divididos em pacotes chamados de <strong>datagramas</strong>. Os datagramas são enviados para a camada de transporte até serem transmitidos pelo cabeamento de rede através dos quadros/frames.</p>
+<p>A camada de internet não verifica se os dados chegaram ao destino — isso é feito na camada de transporte, através do protocolo TCP. A camada de internet é responsável apenas pelo roteamento dos pacotes, ou seja, possui as informações do datagrama que contém o caminho que essa informação deverá percorrer até chegar ao destino.</p>
+
+<h2>Camada de Acesso à Rede</h2>
+<p>É equivalente à camada 1 (Física) e 2 (Enlace) do Modelo OSI. É responsável por enviar o datagrama recebido pela camada de internet, em forma de quadros, através da rede.</p>
+
+<h2>Exercícios: Modelo TCP/IP</h2>
+<ul>
+<li>Explique o que você entendeu até o momento sobre o Modelo de Referência TCP/IP e para que ele é utilizado.</li>
+<li>Pesquise, cite e explique 3 protocolos (ainda não mencionados) que existem na camada de aplicação do modelo TCP/IP.</li>
+<li>Explique o que você entendeu sobre a função e as portas padrões utilizadas pelos protocolos da atividade anterior.</li>
+</ul>
+
+<h2>Endereçamento IPv4</h2>
+<p>O endereçamento permite verificar se um dispositivo pertence ou não a uma rede de computadores. Cada dispositivo na rede deve ter um único endereço IPv4 — é através desse endereço que os roteadores fazem a associação do endereço MAC com o IPv4 e conseguem realizar a entrega dos pacotes corretamente.</p>
+
+<h3>Gateways</h3>
+<p>Uma rede de computadores pode ser interligada a outras e, nesses casos, é necessário utilizar dispositivos que chamamos de <strong>roteadores</strong> ou <strong>gateways</strong>.</p>
+<p>Quando um computador da rede A precisa enviar uma informação para um computador da rede C, a máquina precisa enviar o pacote primeiro ao gateway A, que gerencia a rede A. Consequentemente, essa informação será repassada para o próximo gateway, e assim por diante, até chegar ao destino final na rede C.</p>
+<p>Toda rede de computadores precisa ter um gateway para conseguir se comunicar com a internet — sem gateway, você está offline. Todos os pacotes recebidos que não são para a rede local precisam passar pelo gateway, pois é ele quem conhece o roteamento para a internet ou para a outra rede local que você precisa alcançar.</p>
+
+<h2>Estrutura do endereço IPv4</h2>
+<p>O endereço IPv4 é um protocolo da camada de rede. Existe um endereço lógico único em toda a rede. O endereço IPv4 tem um tamanho de <strong>4 bytes (32 bits)</strong>, no qual é realizada a segmentação dos bytes de um endereço IP em 4 campos, separados por 8 bits cada — os <strong>octetos</strong>, convertidos em número de base decimal.</p>
+<ul>
+<li>O menor número para hosts possível é <strong>0</strong>.</li>
+<li>O maior número de hosts possível é <strong>255</strong>.</li>
+<li>O menor endereço de rede possível é <strong>0.0.0.0</strong>.</li>
+<li>O maior endereço de rede possível é <strong>255.255.255.255</strong>.</li>
+</ul>
+<p>Em teoria, uma rede pode chegar a até <strong>4.294.967.296</strong> endereços (2³² ou 256⁴). Mas alguns endereços são reservados e não podem ser utilizados — é o caso do IPv4 de broadcast e do IPv4 da rede, que não são utilizados. Também existem diversos blocos de endereços reservados para finalidades específicas, como redes privadas, loopback e multicast.</p>
+
+<h3>IPv4 x IPv6</h3>
+<p>Com o crescimento da internet, o espaço de endereçamento IPv4 tornou-se insuficiente para atender a quantidade de dispositivos conectados pelo mundo. Com isso, foi criado o <strong>IPv6</strong>, que utiliza 128 bits para representar os endereços.</p>
+<ul>
+<li><strong>IPv4</strong>: 32 bits, ~4,3 bilhões de endereços (2³² ou 256⁴), sendo que uma parcela é reservada para fins específicos.</li>
+<li><strong>IPv6</strong>: 128 bits, ~3,4 x 10³⁸ endereços (2¹²⁸ ou 256¹⁶).</li>
+</ul>
+
+<h2>Classes de endereços IPv4</h2>
+<p>Os endereços IPv4 são divididos em classes, de A até E. O objetivo é determinar qual parte do endereço IP pertence à rede e qual pertence ao host, além de permitir uma distribuição de IPs mais eficaz.</p>
+
+<h3>Classe A</h3>
+<ul>
+<li>Primeiro byte do endereço: entre <strong>1 e 126</strong>.</li>
+<li>O primeiro octeto identifica a rede; os demais identificam os hosts.</li>
+<li>Permite até <strong>126 redes</strong> e <strong>16.777.214 hosts</strong>.</li>
+<li>Exemplo: <code>10.0.100.1/8</code></li>
+</ul>
+
+<h3>Classe B</h3>
+<ul>
+<li>Primeiro byte do endereço: de <strong>128 até 191</strong>.</li>
+<li>Os dois primeiros octetos identificam a rede; os demais identificam os hosts.</li>
+<li>Permite até <strong>16.384 redes</strong> e <strong>65.534 hosts</strong>.</li>
+<li>Exemplo: <code>172.16.50.10/16</code></li>
+</ul>
+
+<h3>Classe C</h3>
+<ul>
+<li>Primeiro byte do endereço: de <strong>192 até 223</strong>.</li>
+<li>O primeiro octeto identifica a rede; os demais identificam os hosts.</li>
+<li>Permite até <strong>2.097.150 redes</strong> e <strong>254 hosts</strong>.</li>
+<li>Exemplo: <code>192.168.1.10/24</code></li>
+</ul>
+
+<p><strong>Resumo comparativo:</strong> a Classe A permite mais hosts, porém menos redes. A Classe C permite menos hosts, porém mais redes.</p>
+
+<h2>IPs públicos, privados e NAT</h2>
+<p>A maioria dos endereços IPs são públicos. Os endereços privados não permitem acesso direto à internet. É possível fazer uso do redirecionamento de endereços através do mecanismo de <strong>NAT</strong>, disponível nos firewalls — por exemplo: Pfsense, Mikrotik Routerboard, Cisco Meraki, Fortinet.</p>
+<p>O NAT traduz o endereço IP privado em IP público, permitindo acessar um dispositivo remotamente através do redirecionamento no firewall utilizando um IP público. Exemplo:</p>
+<ul>
+<li>IP Privado: <code>192.168.1.100</code> (servidor Web, hospedando um site na porta 443 — ou seja, <code>https://192.168.1.100</code> abrirá o site internamente)</li>
+<li>IP Público: <code>191.5.50.x</code></li>
+<li>NAT no equipamento redirecionando as requisições que chegam na porta 443 para o servidor Web:</li>
+</ul>
+<table>
+<thead>
+<tr><th>PROTO</th><th>IP PÚBLICO</th><th>PORTA</th><th>IP INTERNO</th><th>PORTA</th><th>DESCRIÇÃO</th></tr>
+</thead>
+<tbody>
+<tr><td>TCP/UDP</td><td>191.5.50.x</td><td>443</td><td>192.168.1.100</td><td>443</td><td>Servidor Web</td></tr>
+</tbody>
+</table>
+
+<h3>Faixas de endereços IP privados</h3>
+<ul>
+<li><strong>Classe A</strong>: de <code>10.0.0.0</code> a <code>10.255.255.255</code> (<code>10.0.0.0/8</code>)</li>
+<li><strong>Classe B</strong>: de <code>172.16.0.0</code> a <code>172.31.255.255</code> (<code>172.16.0.0/16</code>)</li>
+<li><strong>Classe C</strong>: de <code>192.168.0.0</code> a <code>192.168.255.255</code> (<code>192.168.0.0/24</code>)</li>
+</ul>
+
+<h2>Máscara de rede</h2>
+<p>Até aqui aprendemos que o endereçamento IPv4 foi dividido em classes (A, B, C, D e E). Outro fator importante para identificar e diferenciar as redes de computadores, além do endereço IPv4, é a <strong>máscara de rede</strong>. Ela serve para que o protocolo IP, na camada 3 (Rede), consiga identificar a rede à qual o host pertence.</p>
+<p>Em um endereço IPv4 temos um endereço hierárquico de 32 bits, composto por uma parte específica para rede e uma parte para host. A máscara de rede é usada para determinar essas partes, com notação em decimal para facilitar a leitura.</p>
+<p>Cada endereço IPv4 possui uma identificação de rede e uma de host (máquina/computador/estação de trabalho/terminal):</p>
+<ul>
+<li><strong>Identificação de rede</strong>: identifica os sistemas localizados no mesmo segmento físico de rede, na abrangência dos roteadores IPs.</li>
+<li><strong>Identificação do host</strong>: identifica uma estação de trabalho ou outro dispositivo conectado à rede (estações de trabalho, switches, tablets, smartphones etc.).</li>
+</ul>
+
+<h3>Valores possíveis em cada octeto da máscara</h3>
+<p>Os possíveis valores em cada octeto de uma máscara de rede são somente estes:</p>
+<ul>
+<li>0</li>
+<li>128</li>
+<li>192</li>
+<li>224</li>
+<li>240</li>
+<li>248</li>
+<li>252</li>
+<li>254</li>
+<li>255</li>
+</ul>
+<p>Existem diversas máscaras de rede, não somente as máscaras /8, /16 e /24 apresentadas como padrão das classes A, B e C — por exemplo: <code>255.255.255.252</code>, <code>255.255.255.248</code>, <code>255.255.255.192</code>, <code>255.255.192.0</code>.</p>
+
+<h3>Notação CIDR (prefixo)</h3>
+<p>É um método menos complicado de identificar um endereço de máscara de rede. O comprimento do prefixo é o número de bits que estão definidos como 1 na máscara de rede. É escrito em notação de barra — basta contar o número de bits em 1 na máscara de rede e adicionar uma barra antes do número.</p>
+<p>Sempre que você ouvir algo como "minha rede é um /24" ou "minha rede está em um /24", significa que a rede possui 254 endereços de hosts e é uma rede da classe C, pois há 3 octetos (24 bits) identificados como 1 na máscara de rede.</p>
+
+<h2>Tipos de endereço em uma rede</h2>
+<p>Dentro de uma rede de computadores, sempre haverá 3 tipos de endereços IPv4:</p>
+<ul>
+<li><strong>Endereço de rede</strong>: é o primeiro endereço da rede. Exemplo: se minha rede é <code>192.168.0.0/24</code>, os endereços de hosts válidos começam a partir do IPv4 <code>192.168.0.1</code>, pois o IPv4 <code>192.168.0.0</code> está sendo usado para especificar qual é a rede local.</li>
+<li><strong>Endereço de host</strong>: os demais endereços que sobraram (no exemplo, de <code>192.168.0.1</code> a <code>192.168.0.254</code>) são os endereços válidos para utilização nos dispositivos — celulares, notebooks, tablets, roteadores, switches, impressoras de rede, servidores, terminais/estações, dispositivos IoT, câmeras de segurança por rede etc.</li>
+<li><strong>Endereço de broadcast</strong>: é o último endereço do agrupamento. Exemplo: <code>192.168.0.255</code>.</li>
+</ul>
+<p><strong>Atenção:</strong> não importa qual seja a máscara de rede, sempre lembre-se de considerar o endereço de rede e o endereço de broadcast também.</p>
+<p>Um /24 comporta 256 endereços — diminuindo o endereço de rede e de broadcast, ficam <strong>254 endereços disponíveis</strong>. O mesmo vale para uma máscara /23, que possui 512 endereços — diminuindo o endereço de rede e broadcast, chegamos a <strong>510 endereços disponíveis</strong>.</p>
+
+<h2>Sub-redes</h2>
+<p>A divisão das redes locais em sub-redes serve principalmente para reduzir e dividir o tráfego total daquela interface, melhorando o desempenho da rede, e também para auxiliar a localizar e isolar problemas. Pode ser aplicada para objetivos específicos ou por conta de políticas de segurança da empresa.</p>
+
+<h3>Exemplo de divisão em sub-redes</h3>
+<p>Divisão da rede <code>192.168.0.0/24</code> em 4 sub-redes /26:</p>
+<table>
+<thead>
+<tr><th>Sub-rede</th><th>Intervalo de endereços</th></tr>
+</thead>
+<tbody>
+<tr><td><code>192.168.0.0/26</code></td><td>192.168.0.0 a 192.168.0.63</td></tr>
+<tr><td><code>192.168.0.64/26</code></td><td>192.168.0.64 a 192.168.0.127</td></tr>
+<tr><td><code>192.168.0.128/26</code></td><td>192.168.0.128 a 192.168.0.191</td></tr>
+<tr><td><code>192.168.0.192/26</code></td><td>192.168.0.192 a 192.168.0.255</td></tr>
+</tbody>
+</table>
+
+<h2>Exercícios de fixação</h2>
+<ul>
+<li>Quais as principais diferenças entre IPv4 e IPv6?</li>
+<li>Qual a diferença de IPs públicos e IPs privados? Para que servem?</li>
+<li>Para que serve a máscara de rede?</li>
+<li>Quais são as máscaras de rede mais comuns encontradas em ambientes domésticos e corporativos de pequeno porte?</li>
+<li>O que é um gateway? E quais são as suas funções dentro de uma rede?</li>
+</ul>
+
+<h2>Minhas anotações</h2>
+<p>Espaço livre para escrever o que eu quiser destacar sobre essa aula.</p>
+
+</body>
+</html>
