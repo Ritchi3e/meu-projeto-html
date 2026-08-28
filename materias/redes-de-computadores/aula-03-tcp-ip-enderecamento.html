@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Aula 03 - Modelo TCP/IP e Endereçamento</title>
+<meta name="description" content="Anotações da aula 03 de Redes: modelo TCP/IP, endereçamento IPv4 e IPv6, classes, NAT e sub-redes.">
 <link rel="stylesheet" href="../../assets/css/style.css">
 </head>
 <body>
 <nav><a href="../../index.html">&larr; Voltar para o início</a></nav>
+<main>
 
 <h1>Aula 03 - Modelo de Referência TCP/IP e Endereçamento</h1>
 
@@ -39,7 +41,7 @@
 <li><strong>HTTP</strong> (porta 80): protocolo utilizado por navegadores de internet, sem criptografia — não é recomendado e foi substituído pelo HTTPS.</li>
 <li><strong>FTP</strong>: utiliza por padrão as portas <strong>20</strong> (transferência de arquivos) e <strong>21</strong> (informações de controle de dados).</li>
 <li><strong>HTTPS</strong> (porta 443): principal protocolo da internet atualmente, essencial para acesso a sites hospedados na internet — utiliza criptografia e certificados para garantir a segurança e a integridade dos dados trafegados.</li>
-<li><strong>POP3</strong> (porta 25 conforme a aula): protocolo responsável pelo recebimento de e-mails, controlando a conexão entre um servidor de e-mail e um cliente.</li>
+<li><strong>POP3</strong> (porta 110; 995 com SSL/TLS): protocolo responsável pelo recebimento de e-mails, controlando a conexão entre um servidor de e-mail e um cliente.</li>
 <li><strong>SSH</strong> (porta 22): protocolo de comunicação e acesso remoto aos dispositivos, de forma segura e criptografada.</li>
 </ul>
 
@@ -77,7 +79,7 @@
 <li><strong>ARP</strong>: tabela que faz o mapeamento dos endereços IPv4 para endereços físicos (MAC). É essencial para a comunicação em redes locais, permitindo que os dispositivos identifiquem o endereço físico uns dos outros, de acordo com o endereço IPv4.</li>
 <li><strong>RARP</strong>: função inversa do ARP — mapeia endereços físicos (MAC) para endereços lógicos (IPv4).</li>
 </ul>
-<p>Os pacotes de dados recebidos são divididos em pacotes chamados de <strong>datagramas</strong>. Os datagramas são enviados para a camada de transporte até serem transmitidos pelo cabeamento de rede através dos quadros/frames.</p>
+<p>Os pacotes de dados recebidos são divididos em pacotes chamados de <strong>datagramas</strong>. Os datagramas são enviados para a camada de acesso à rede até serem transmitidos pelo cabeamento de rede através dos quadros/frames.</p>
 <p>A camada de internet não verifica se os dados chegaram ao destino — isso é feito na camada de transporte, através do protocolo TCP. A camada de internet é responsável apenas pelo roteamento dos pacotes, ou seja, possui as informações do datagrama que contém o caminho que essa informação deverá percorrer até chegar ao destino.</p>
 
 <h2>Camada de Acesso à Rede</h2>
@@ -137,8 +139,8 @@
 <h3>Classe C</h3>
 <ul>
 <li>Primeiro byte do endereço: de <strong>192 até 223</strong>.</li>
-<li>O primeiro octeto identifica a rede; os demais identificam os hosts.</li>
-<li>Permite até <strong>2.097.150 redes</strong> e <strong>254 hosts</strong>.</li>
+<li>Os 3 primeiros octetos identificam a rede; o quarto identifica os hosts.</li>
+<li>Permite até <strong>2.097.152 redes</strong> e <strong>254 hosts</strong>.</li>
 <li>Exemplo: <code>192.168.1.10/24</code></li>
 </ul>
 
@@ -152,6 +154,7 @@
 <li>IP Público: <code>191.5.50.x</code></li>
 <li>NAT no equipamento redirecionando as requisições que chegam na porta 443 para o servidor Web:</li>
 </ul>
+<div class="tabela-rolavel">
 <table>
 <thead>
 <tr><th>PROTO</th><th>IP PÚBLICO</th><th>PORTA</th><th>IP INTERNO</th><th>PORTA</th><th>DESCRIÇÃO</th></tr>
@@ -160,12 +163,13 @@
 <tr><td>TCP/UDP</td><td>191.5.50.x</td><td>443</td><td>192.168.1.100</td><td>443</td><td>Servidor Web</td></tr>
 </tbody>
 </table>
+</div>
 
 <h3>Faixas de endereços IP privados</h3>
 <ul>
 <li><strong>Classe A</strong>: de <code>10.0.0.0</code> a <code>10.255.255.255</code> (<code>10.0.0.0/8</code>)</li>
-<li><strong>Classe B</strong>: de <code>172.16.0.0</code> a <code>172.31.255.255</code> (<code>172.16.0.0/16</code>)</li>
-<li><strong>Classe C</strong>: de <code>192.168.0.0</code> a <code>192.168.255.255</code> (<code>192.168.0.0/24</code>)</li>
+<li><strong>Classe B</strong>: de <code>172.16.0.0</code> a <code>172.31.255.255</code> (<code>172.16.0.0/12</code>)</li>
+<li><strong>Classe C</strong>: de <code>192.168.0.0</code> a <code>192.168.255.255</code> (<code>192.168.0.0/16</code>)</li>
 </ul>
 
 <h2>Máscara de rede</h2>
@@ -211,6 +215,7 @@
 
 <h3>Exemplo de divisão em sub-redes</h3>
 <p>Divisão da rede <code>192.168.0.0/24</code> em 4 sub-redes /26:</p>
+<div class="tabela-rolavel">
 <table>
 <thead>
 <tr><th>Sub-rede</th><th>Intervalo de endereços</th></tr>
@@ -222,6 +227,8 @@
 <tr><td><code>192.168.0.192/26</code></td><td>192.168.0.192 a 192.168.0.255</td></tr>
 </tbody>
 </table>
+</div>
 
+</main>
 </body>
 </html>
