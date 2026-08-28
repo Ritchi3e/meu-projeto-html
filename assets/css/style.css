@@ -618,6 +618,214 @@ details h3:first-of-type {
 }
 
 /* =========================================================
+   BOTAO EDITAR NO CARTAO DO INDICE
+   ========================================================= */
+
+ul.aulas-list li {
+    position: relative;
+}
+
+/* sobe a especificidade para vencer a regra do cartao acima */
+ul.aulas-list a.cartao-editar {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.8rem;
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--texto-suave);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+/* so aparece quando o mouse esta no cartao - ou sempre, no celular
+   e para quem navega por teclado */
+ul.aulas-list li:hover a.cartao-editar,
+ul.aulas-list a.cartao-editar:focus-visible {
+    opacity: 1;
+}
+
+ul.aulas-list a.cartao-editar:hover {
+    color: var(--verde-escuro);
+    background-color: var(--verde-claro);
+    border-color: var(--verde);
+}
+
+@media (hover: none) {
+    ul.aulas-list a.cartao-editar {
+        opacity: 1;
+    }
+}
+
+/* deixa espaco para o botao nao cobrir o titulo */
+.cartao-topo {
+    padding-right: 4.5rem;
+}
+
+/* =========================================================
+   EDITOR
+   ========================================================= */
+
+.pagina-editor {
+    max-width: 900px;
+}
+
+.editor-cabecalho h1 {
+    margin-bottom: 0.4rem;
+}
+
+.editor-caminho {
+    margin-top: 0;
+    font-size: 0.8rem;
+    color: var(--texto-suave);
+}
+
+.pagina-editor nav {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* barra de ferramentas gruda no topo ao rolar a pagina */
+.barra-ferramentas {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+    padding: 0.5rem;
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.barra-ferramentas .grupo {
+    display: flex;
+    gap: 0.2rem;
+    padding-right: 0.5rem;
+    border-right: 1px solid var(--borda);
+}
+
+.barra-ferramentas .grupo:last-child {
+    padding-right: 0;
+    border-right: none;
+}
+
+.barra-ferramentas button {
+    min-width: 2.1rem;
+    height: 2.1rem;
+    padding: 0 0.5rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--texto);
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.barra-ferramentas button:hover {
+    background-color: var(--cinza-claro);
+}
+
+/* botao aceso quando o cursor esta em texto com aquele formato */
+.barra-ferramentas button.ativo {
+    color: var(--verde-escuro);
+    background-color: var(--verde-claro);
+    border-color: var(--verde);
+}
+
+.barra-ferramentas select {
+    height: 2.1rem;
+    padding: 0 0.4rem;
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: var(--texto);
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 6px;
+}
+
+/* a folha onde se escreve */
+.editor {
+    min-height: 24rem;
+    padding: 1.5rem;
+    background-color: var(--cartao);
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+    line-height: 1.65;
+}
+
+.editor:focus {
+    outline: none;
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px var(--verde-claro);
+}
+
+.editor > :first-child {
+    margin-top: 0;
+}
+
+.editor blockquote {
+    margin: 1rem 0;
+    padding-left: 1rem;
+    color: var(--texto-suave);
+    border-left: 3px solid var(--borda);
+}
+
+/* fontes que o editor aplica por paragrafo */
+.fonte-serifada {
+    font-family: Georgia, "Times New Roman", serif;
+}
+
+.fonte-mono {
+    font-family: "SFMono-Regular", Consolas, monospace;
+}
+
+mark {
+    padding: 0.05rem 0.2rem;
+    background-color: #fff3b0;
+    border-radius: 3px;
+}
+
+/* barra de salvar, colada no rodape da janela */
+.barra-salvar {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    padding: 0.8rem 0;
+    background-color: var(--cartao);
+    border-top: 1px solid var(--borda);
+}
+
+.estado-salvo {
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+}
+
+.estado-ok {
+    color: var(--certo-texto);
+}
+
+.estado-pendente {
+    color: var(--aviso-texto);
+}
+
+.estado-erro {
+    color: var(--erro-texto);
+}
+
+/* =========================================================
    RESPONSIVO
    Em telas pequenas o cartao ocupa a tela inteira, sem
    margem lateral desperdicada.

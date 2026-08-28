@@ -87,9 +87,10 @@ function cartaoDaAula(aula) {
         return '<span class="tag">' + escapar(tag) + "</span>";
     }).join("");
 
+    // o link de editar fica fora do cartao: um <a> nao pode conter outro
     return '' +
         '<li>' +
-            '<a href="' + escapar(aula.arquivo) + '">' +
+            '<a class="cartao-link" href="' + escapar(aula.arquivo) + '">' +
                 '<span class="cartao-topo">' +
                     '<span class="cartao-titulo">Aula ' +
                         String(aula.aula).padStart(2, "0") + ' - ' +
@@ -103,6 +104,8 @@ function cartaoDaAula(aula) {
                     '<span class="tags">' + tags + '</span>' +
                 '</span>' +
             '</a>' +
+            '<a class="cartao-editar" href="editor.html?arquivo=' +
+                encodeURIComponent(aula.arquivo) + '">Editar</a>' +
         '</li>';
 }
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor</title>
+<meta name="description" content="Editor da biblioteca de estudos: escreva a aula e salve direto no projeto.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="pagina-editor">
+
+<nav>
+<a href="index.html">&larr; Voltar para o início</a>
+<a id="ver-aula" href="#" target="_blank" rel="noopener noreferrer">Ver a página pronta</a>
+</nav>
+
+<header class="editor-cabecalho">
+<h1 id="titulo-aula">Carregando…</h1>
+<p class="editor-caminho">Arquivo: <code id="caminho-aula">…</code></p>
+</header>
+
+<div class="barra-ferramentas" role="toolbar" aria-label="Formatação">
+
+<div class="grupo">
+<button type="button" data-comando="undo" title="Desfazer (Ctrl+Z)" aria-label="Desfazer">↶</button>
+<button type="button" data-comando="redo" title="Refazer (Ctrl+Y)" aria-label="Refazer">↷</button>
+</div>
+
+<div class="grupo">
+<label class="apenas-leitor" for="formato">Formato do parágrafo</label>
+<select id="formato" title="Formato do parágrafo">
+<option value="p">Texto normal</option>
+<option value="h2">Título de seção</option>
+<option value="h3">Subtítulo</option>
+<option value="h4">Subtítulo menor</option>
+<option value="pre">Bloco de código</option>
+<option value="blockquote">Citação</option>
+</select>
+</div>
+
+<div class="grupo">
+<label class="apenas-leitor" for="fonte">Fonte</label>
+<select id="fonte" title="Fonte do parágrafo">
+<option value="">Fonte padrão</option>
+<option value="fonte-serifada">Serifada</option>
+<option value="fonte-mono">Monoespaçada</option>
+</select>
+</div>
+
+<div class="grupo">
+<button type="button" data-comando="bold" title="Negrito (Ctrl+B)" aria-label="Negrito"><strong>N</strong></button>
+<button type="button" data-comando="italic" title="Itálico (Ctrl+I)" aria-label="Itálico"><em>I</em></button>
+<button type="button" data-comando="underline" title="Sublinhado (Ctrl+U)" aria-label="Sublinhado"><u>S</u></button>
+<button type="button" data-acao="destaque" title="Destacar" aria-label="Destacar">✎</button>
+<button type="button" data-acao="codigo" title="Código no meio do texto" aria-label="Código">&lt;/&gt;</button>
+</div>
+
+<div class="grupo">
+<button type="button" data-comando="insertUnorderedList" title="Lista com marcadores" aria-label="Lista com marcadores">• —</button>
+<button type="button" data-comando="insertOrderedList" title="Lista numerada" aria-label="Lista numerada">1. —</button>
+</div>
+
+<div class="grupo">
+<button type="button" data-acao="link" title="Inserir link" aria-label="Inserir link">🔗</button>
+<button type="button" data-acao="tabela" title="Inserir tabela" aria-label="Inserir tabela">▦</button>
+<button type="button" data-comando="removeFormat" title="Limpar formatação" aria-label="Limpar formatação">✕</button>
+</div>
+
+</div>
+
+<main>
+<div id="editor" class="editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Conteúdo da aula"></div>
+</main>
+
+<div class="barra-salvar">
+<button type="button" id="salvar" class="botao">Salvar</button>
+<span id="estado-salvo" class="estado-salvo">carregando…</span>
+<span class="dica">salva sozinho a cada 30 segundos &middot; <kbd>Ctrl</kbd>+<kbd>S</kbd></span>
+</div>
+
+<div id="recado" class="recado" hidden></div>
+
+<script src="assets/js/editor.js"></script>
+</body>
+</html>
