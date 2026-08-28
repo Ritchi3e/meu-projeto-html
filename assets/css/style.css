@@ -96,23 +96,48 @@ a:focus-visible {
     border-radius: 4px;
 }
 
-/* botao "Voltar para o inicio" das paginas de aula */
+/* menu do topo das paginas de aula: voltar, editar e excluir */
 nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin-bottom: 1.5rem;
 }
 
-nav a {
+nav a,
+nav button {
     display: inline-block;
     padding: 0.45rem 0.9rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--verde-escuro);
+    background-color: transparent;
     border: 1px solid var(--verde);
     border-radius: 6px;
-    color: var(--verde-escuro);
     text-decoration: none;
-    font-size: 0.9rem;
+    cursor: pointer;
 }
 
 nav a:hover {
     background-color: var(--verde-claro);
+}
+
+/* excluir e destrutivo: fica cinza parado e vermelho no hover, para
+   nao ser clicado por engano no lugar do editar */
+nav button.nav-excluir {
+    color: var(--texto-suave);
+    border-color: var(--borda);
+}
+
+nav button.nav-excluir:hover {
+    color: var(--erro-texto);
+    background-color: var(--erro-fundo);
+    border-color: var(--erro-borda);
+}
+
+nav button:disabled {
+    cursor: progress;
+    opacity: 0.6;
 }
 
 /* lista de aulas em formato de cartao, como no print */

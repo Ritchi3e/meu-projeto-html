@@ -99,11 +99,14 @@ def formatar_corpo(corpo):
 
 def pagina_da_aula(titulo_completo, resumo, corpo, relativo):
     """Monta o arquivo .html inteiro a partir do miolo escrito no editor."""
-    nav = (
-        '<nav><a href="../../index.html">&larr; Voltar para o início</a>'
-        ' <a href="../../editor.html?arquivo=%s">Editar</a></nav>'
-        % escapar_atributo(relativo)
-    )
+    caminho = escapar_atributo(relativo)
+    nav = "\n".join([
+        "<nav>",
+        '<a href="../../index.html">&larr; Voltar para o início</a>',
+        '<a href="../../editor.html?arquivo=%s">Editar</a>' % caminho,
+        '<button type="button" class="nav-excluir" data-arquivo="%s">Excluir</button>' % caminho,
+        "</nav>",
+    ])
     return "\n".join([
         "<!DOCTYPE html>",
         '<html lang="pt-BR">',
@@ -123,6 +126,8 @@ def pagina_da_aula(titulo_completo, resumo, corpo, relativo):
         formatar_corpo(corpo.strip()),
         "",
         "</main>",
+        '<script src="../../assets/js/api.js"></script>',
+        '<script src="../../assets/js/aula.js"></script>',
         "</body>",
         "</html>",
         "",
