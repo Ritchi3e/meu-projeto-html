@@ -1,23 +1,30 @@
 /* =========================================================
    PAGINA DE CADASTRO
-   Le o que voce digita no formulario e monta dois textos
-   prontos para copiar:
-     1. o bloco do catalogo, para colar em dados/aulas.js
-     2. o esqueleto do arquivo HTML da aula
+   Le o formulario e grava dois arquivos direto na pasta do
+   projeto:
+     1. o cadastro, acrescentado em dados/aulas.js
+     2. a pagina da aula, em materias/<materia>/
 
-   Nada e salvo automaticamente: este site e estatico, entao
-   quem grava os arquivos e voce (ou o commit no git).
+   A gravacao usa a File System Access API. Ela so existe no
+   Chrome e no Edge; nos outros navegadores a pagina cai no
+   modo manual (copiar e colar), que funciona em qualquer um.
    ========================================================= */
 
+const TEM_GRAVACAO = "showDirectoryPicker" in window;
+
+// pasta do projeto escolhida pelo usuario, guardada enquanto
+// a aba estiver aberta
+let pastaRaiz = null;
+
 /* ---------------------------------------------------------
-   AJUDANTES
+   AJUDANTES DE TEXTO
    --------------------------------------------------------- */
 
 // "Endereçamento IPv6!" -> "enderecamento-ipv6"
 function slug(texto) {
     return String(texto)
         .normalize("NFD")
-        .replace(/\p{Mn}/gu, "")   // tira os acentos
+        .replace(/\p{Mn}/gu, "")      // tira os acentos
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")  // tudo que nao e letra/numero vira hifen
         .replace(/^-+|-+$/g, "");     // sem hifen sobrando nas pontas
@@ -32,7 +39,16 @@ function doisDigitos(numero) {
     return String(numero).padStart(2, "0");
 }
 
-// le o formulario inteiro de uma vez
+function escaparHtml(texto) {
+    const div = document.createElement("div");
+    div.textContent = texto;
+    return div.innerHTML;
+}
+
+/* ---------------------------------------------------------
+   LEITURA DO FORMULARIO
+   --------------------------------------------------------- */
+
 function lerFormulario() {
     const titulo = document.getElementById("titulo").value.trim();
     const materia = document.getElementById("materia").value.trim();
@@ -46,20 +62,42 @@ function lerFormulario() {
         .filter(function (t) { return t !== ""; });
 
     const pastaMateria = slug(materia) || "materia";
-    const nomeArquivo = "aula-" + doisDigitos(numero) + "-" + (slug(titulo) || "sem-titulo") + ".html";
-    const caminho = "materias/" + pastaMateria + "/" + nomeArquivo;
+    const apelido = slug(titulo) || "sem-titulo";
+    const nomeArquivo = "aula-" + doisDigitos(numero) + "-" + apelido + ".html";
 
     return {
-        id: pastaMateria + "-" + doisDigitos(numero) + "-" + (slug(titulo) || "sem-titulo"),
+        id: pastaMateria + "-" + doisDigitos(numero) + "-" + apelido,
         titulo: titulo,
         materia: materia,
         aula: numero,
         data: data,
         tags: tags,
         resumo: resumo,
-        arquivo: caminho,
-        status: status
+        arquivo: "materias/" + pastaMateria + "/" + nomeArquivo,
+        status: status,
+        // usados so na hora de gravar
+        pastaMateria: pastaMateria,
+        nomeArquivo: nomeArquivo
     };
+}
+
+// devolve uma lista de problemas; vazia significa tudo certo
+function validar(aula) {
+    const problemas = [];
+    if (aula.titulo === "") problemas.push("O título da aula está vazio.");
+    if (aula.materia === "") problemas.push("A matéria está vazia.");
+    if (aula.resumo === "") problemas.push("O resumo está vazio.");
+    if (aula.data === "") problemas.push("A data está vazia.");
+    if (aula.aula < 1) problemas.push("O número da aula precisa ser 1 ou maior.");
+
+    if (AULAS.some(function (a) { return a.id === aula.id; })) {
+        problemas.push("Já existe uma aula com o identificador " + aula.id +
+                       ". Mude o título ou o número da aula.");
+    }
+    if (AULAS.some(function (a) { return a.arquivo === aula.arquivo; })) {
+        problemas.push("Já existe uma aula cadastrada no arquivo " + aula.arquivo + ".");
+    }
+    return problemas;
 }
 
 /* ---------------------------------------------------------
@@ -112,27 +150,225 @@ function esqueletoDaPagina(aula) {
         '',
         '</main>',
         '</body>',
-        '</html>'
+        '</html>',
+        ''
     ].join("\n");
 }
 
-/* ---------------------------------------------------------
-   ATUALIZACAO DA TELA
-   --------------------------------------------------------- */
-
-function atualizar() {
-    const aula = lerFormulario();
-    document.getElementById("saida-catalogo").textContent = blocoDoCatalogo(aula);
-    document.getElementById("saida-pagina").textContent = esqueletoDaPagina(aula);
-    document.getElementById("saida-caminho").textContent = aula.arquivo;
+// acrescenta o bloco novo antes do "];" que fecha a lista
+function catalogoAtualizado(textoAtual, bloco) {
+    const fim = textoAtual.lastIndexOf("];");
+    if (fim === -1) {
+        throw new Error("Nao encontrei o ']; ' que fecha a lista AULAS em dados/aulas.js.");
+    }
+    const antes = textoAtual.slice(0, fim).replace(/\s+$/, "");
+    const depois = textoAtual.slice(fim);
+    // se ja existe uma aula antes, precisa de virgula
+    const virgula = /\}$/.test(antes) ? "," : "";
+    return antes + virgula + "\n" + bloco + "\n" + depois;
 }
 
 /* ---------------------------------------------------------
-   COPIAR
-   O clipboard moderno so funciona em https ou localhost.
-   Abrindo o arquivo direto (file://) ele costuma falhar,
-   entao existe um plano B e, se nem ele funcionar, o texto
-   fica selecionado para voce apertar Ctrl+C.
+   PASTA DO PROJETO
+   O navegador guarda a pasta escolhida (IndexedDB), entao nas
+   proximas vezes basta reconfirmar a permissao.
+   --------------------------------------------------------- */
+
+function abrirBanco() {
+    return new Promise(function (ok, falhou) {
+        const pedido = indexedDB.open("biblioteca-cadastro", 1);
+        pedido.onupgradeneeded = function () {
+            pedido.result.createObjectStore("pastas");
+        };
+        pedido.onsuccess = function () { ok(pedido.result); };
+        pedido.onerror = function () { falhou(pedido.error); };
+    });
+}
+
+async function guardarPasta(handle) {
+    try {
+        const banco = await abrirBanco();
+        await new Promise(function (ok, falhou) {
+            const transacao = banco.transaction("pastas", "readwrite");
+            transacao.objectStore("pastas").put(handle, "raiz");
+            transacao.oncomplete = ok;
+            transacao.onerror = function () { falhou(transacao.error); };
+        });
+    } catch (erro) {
+        // lembrar a pasta e conforto, nao requisito: seguir sem isso
+    }
+}
+
+async function pastaLembrada() {
+    try {
+        const banco = await abrirBanco();
+        return await new Promise(function (ok) {
+            const transacao = banco.transaction("pastas", "readonly");
+            const pedido = transacao.objectStore("pastas").get("raiz");
+            pedido.onsuccess = function () { ok(pedido.result || null); };
+            pedido.onerror = function () { ok(null); };
+        });
+    } catch (erro) {
+        return null;
+    }
+}
+
+// confere se a pasta escolhida e mesmo a do projeto
+async function pareceOProjeto(raiz) {
+    try {
+        const dados = await raiz.getDirectoryHandle("dados");
+        await dados.getFileHandle("aulas.js");
+        return true;
+    } catch (erro) {
+        return false;
+    }
+}
+
+// pede a pasta, reaproveitando a lembrada quando possivel.
+// precisa ser chamada a partir de um clique, senao o navegador
+// recusa o pedido de permissao.
+async function obterPasta() {
+    if (pastaRaiz) return pastaRaiz;
+
+    const lembrada = await pastaLembrada();
+    if (lembrada) {
+        const jaTem = await lembrada.queryPermission({ mode: "readwrite" });
+        const permissao = jaTem === "granted"
+            ? "granted"
+            : await lembrada.requestPermission({ mode: "readwrite" });
+        if (permissao === "granted" && await pareceOProjeto(lembrada)) {
+            pastaRaiz = lembrada;
+            return pastaRaiz;
+        }
+    }
+
+    const escolhida = await window.showDirectoryPicker({ mode: "readwrite" });
+    if (!await pareceOProjeto(escolhida)) {
+        throw new Error(
+            "Essa pasta não parece a do projeto: não encontrei dados/aulas.js dentro dela. " +
+            "Escolha a pasta meu-projeto-html, aquela que tem o index.html."
+        );
+    }
+    pastaRaiz = escolhida;
+    await guardarPasta(escolhida);
+    return pastaRaiz;
+}
+
+/* ---------------------------------------------------------
+   ESCRITA DOS ARQUIVOS
+   --------------------------------------------------------- */
+
+async function lerArquivo(pasta, nome) {
+    const handle = await pasta.getFileHandle(nome);
+    const arquivo = await handle.getFile();
+    return await arquivo.text();
+}
+
+async function escreverArquivo(pasta, nome, conteudo) {
+    const handle = await pasta.getFileHandle(nome, { create: true });
+    const fluxo = await handle.createWritable();
+    await fluxo.write(conteudo);
+    await fluxo.close();
+}
+
+async function arquivoExiste(pasta, nome) {
+    try {
+        await pasta.getFileHandle(nome);
+        return true;
+    } catch (erro) {
+        return false;
+    }
+}
+
+/* ---------------------------------------------------------
+   O SALVAMENTO
+   --------------------------------------------------------- */
+
+async function salvar() {
+    const aula = lerFormulario();
+
+    const problemas = validar(aula);
+    if (problemas.length > 0) {
+        mostrarRecado("erro", "Faltou ajustar antes de salvar:", problemas);
+        return;
+    }
+
+    const raiz = await obterPasta();
+
+    // 1. a pagina da aula - nunca sobrescreve nota existente
+    const pastaMaterias = await raiz.getDirectoryHandle("materias", { create: true });
+    const pastaDaMateria = await pastaMaterias.getDirectoryHandle(aula.pastaMateria, { create: true });
+
+    if (await arquivoExiste(pastaDaMateria, aula.nomeArquivo)) {
+        mostrarRecado("erro", "Nada foi gravado.", [
+            "O arquivo " + aula.arquivo + " já existe.",
+            "Para não apagar uma anotação sua, a página não sobrescreve arquivos. " +
+            "Mude o número ou o título da aula, ou apague o arquivo antigo você mesmo."
+        ]);
+        return;
+    }
+
+    // 2. o catalogo - le, acrescenta e regrava
+    const pastaDados = await raiz.getDirectoryHandle("dados");
+    const catalogoAntigo = await lerArquivo(pastaDados, "aulas.js");
+    const catalogoNovo = catalogoAtualizado(catalogoAntigo, blocoDoCatalogo(aula));
+
+    // grava a pagina primeiro: se algo falhar no catalogo, sobra um
+    // arquivo orfao (inofensivo) em vez de um cadastro apontando
+    // para um arquivo que nao existe (link quebrado)
+    await escreverArquivo(pastaDaMateria, aula.nomeArquivo, esqueletoDaPagina(aula));
+    await escreverArquivo(pastaDados, "aulas.js", catalogoNovo);
+
+    // mantem a lista da memoria em dia, para que o proximo cadastro
+    // feito sem recarregar a pagina ainda detecte duplicidade
+    AULAS.push({
+        id: aula.id,
+        titulo: aula.titulo,
+        materia: aula.materia,
+        aula: aula.aula,
+        data: aula.data,
+        tags: aula.tags,
+        resumo: aula.resumo,
+        arquivo: aula.arquivo,
+        status: aula.status
+    });
+    preencherMaterias();
+
+    mostrarRecado("certo", "Aula cadastrada.", [
+        "Criado: " + aula.arquivo,
+        "Atualizado: dados/aulas.js"
+    ], aula);
+}
+
+/* ---------------------------------------------------------
+   MENSAGENS NA TELA
+   --------------------------------------------------------- */
+
+function mostrarRecado(tipo, titulo, linhas, aula) {
+    const alvo = document.getElementById("recado");
+    let html = '<p class="recado-titulo">' + escaparHtml(titulo) + "</p><ul>";
+    linhas.forEach(function (linha) {
+        html += "<li>" + escaparHtml(linha) + "</li>";
+    });
+    html += "</ul>";
+
+    if (aula) {
+        html += '<p><a href="' + escaparHtml(aula.arquivo) + '">Abrir a aula nova</a> ' +
+                '&middot; <a href="index.html">Ver no índice</a></p>';
+    }
+
+    alvo.className = "recado recado-" + tipo;
+    alvo.innerHTML = html;
+    alvo.hidden = false;
+    alvo.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function esconderRecado() {
+    document.getElementById("recado").hidden = true;
+}
+
+/* ---------------------------------------------------------
+   COPIAR (modo manual)
    --------------------------------------------------------- */
 
 function copiar(texto, elemento) {
@@ -181,13 +417,19 @@ function avisar(botao, mensagem) {
 }
 
 /* ---------------------------------------------------------
-   LIGACOES COM A PAGINA
+   ATUALIZACAO DA TELA
    --------------------------------------------------------- */
 
-document.addEventListener("DOMContentLoaded", function () {
+function atualizar() {
+    const aula = lerFormulario();
+    document.getElementById("saida-catalogo").textContent = blocoDoCatalogo(aula);
+    document.getElementById("saida-pagina").textContent = esqueletoDaPagina(aula);
+    document.getElementById("saida-caminho").textContent = aula.arquivo;
+}
 
-    // sugere as materias que ja existem no catalogo
+function preencherMaterias() {
     const datalist = document.getElementById("materias-existentes");
+    datalist.innerHTML = "";
     Array.from(new Set(AULAS.map(function (a) { return a.materia; })))
         .sort(function (a, b) { return a.localeCompare(b, "pt-BR"); })
         .forEach(function (materia) {
@@ -195,6 +437,15 @@ document.addEventListener("DOMContentLoaded", function () {
             opcao.value = materia;
             datalist.appendChild(opcao);
         });
+}
+
+/* ---------------------------------------------------------
+   LIGACOES COM A PAGINA
+   --------------------------------------------------------- */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    preencherMaterias();
 
     // data de hoje ja preenchida
     const campoData = document.getElementById("data");
@@ -213,13 +464,64 @@ document.addEventListener("DOMContentLoaded", function () {
         atualizar();
     });
 
-    document.getElementById("form-aula").addEventListener("input", atualizar);
+    document.getElementById("form-aula").addEventListener("input", function () {
+        esconderRecado();
+        atualizar();
+    });
 
-    // nao existe servidor para receber o envio: o resultado
-    // e o texto gerado, entao o Enter nao deve recarregar a pagina
+    // nao existe servidor para receber o envio do formulario
     document.getElementById("form-aula").addEventListener("submit", function (evento) {
         evento.preventDefault();
     });
+
+    // botao principal
+    const botaoSalvar = document.getElementById("salvar");
+    const estadoPasta = document.getElementById("estado-pasta");
+
+    if (!TEM_GRAVACAO) {
+        botaoSalvar.hidden = true;
+        document.getElementById("sem-suporte").hidden = false;
+        document.getElementById("modo-manual").open = true;
+    } else {
+        estadoPasta.textContent = "na primeira vez o navegador vai pedir a pasta do projeto";
+
+        botaoSalvar.addEventListener("click", async function () {
+            botaoSalvar.disabled = true;
+            const rotulo = botaoSalvar.textContent;
+            botaoSalvar.textContent = "Salvando...";
+            try {
+                await salvar();
+            } catch (erro) {
+                if (erro && erro.name === "AbortError") {
+                    // o usuario fechou a janela de escolha da pasta
+                    mostrarRecado("aviso", "Escolha da pasta cancelada.", [
+                        "Nada foi gravado. Clique em salvar de novo quando quiser."
+                    ]);
+                } else if (erro && erro.name === "SecurityError") {
+                    // alguns navegadores nao deixam escolher pasta quando a
+                    // pagina foi aberta direto do disco (endereco file://)
+                    mostrarRecado("aviso", "O navegador não deixou escolher a pasta.", [
+                        "Isso costuma acontecer quando a página é aberta com duplo clique (endereço file://).",
+                        "Abra o projeto por um servidor local - o Live Server do VS Code, ou " +
+                        "'python -m http.server 8000' na pasta do projeto - e use " +
+                        "http://localhost:8000/novo.html.",
+                        "Se preferir não usar servidor, o modo manual logo abaixo funciona sempre."
+                    ]);
+                    document.getElementById("modo-manual").open = true;
+                } else {
+                    mostrarRecado("erro", "Não consegui gravar.", [
+                        (erro && erro.message) ? erro.message : String(erro)
+                    ]);
+                }
+            } finally {
+                botaoSalvar.disabled = false;
+                botaoSalvar.textContent = rotulo;
+                if (pastaRaiz) {
+                    estadoPasta.textContent = "pasta liberada: " + pastaRaiz.name;
+                }
+            }
+        });
+    }
 
     document.querySelectorAll(".botao-copiar").forEach(function (botao) {
         botao.addEventListener("click", function () {

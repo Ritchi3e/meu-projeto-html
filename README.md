@@ -13,12 +13,11 @@ Basta abrir o `index.html` no navegador — não precisa de servidor. O catálog
 carregado por `<script src>`, e não por `fetch`, justamente para que o site continue
 funcionando ao abrir o arquivo direto (`file://`).
 
-A única coisa que não funciona em `file://` é o botão **Copiar** da página de
-cadastro, porque a API de área de transferência exige contexto seguro. Nesse caso a
-página seleciona o texto sozinha e mostra "Selecionado - Ctrl+C".
-
-Se quiser rodar com servidor (recomendado, e obrigatório se um dia migrar para
-`fetch` + JSON), use a extensão **Live Server** do VS Code, ou:
+Ler a biblioteca funciona sempre assim. A página de **cadastro**, porém, depende de
+recursos que alguns navegadores só liberam em contexto seguro (`https` ou
+`localhost`) — o botão Copiar e, principalmente, a escolha da pasta do projeto. Se o
+cadastro reclamar ao abrir por duplo clique, rode com servidor: use a extensão
+**Live Server** do VS Code, ou:
 
 ```bash
 python -m http.server 8000
@@ -53,13 +52,45 @@ meu-projeto-html/
 1. Abra o `novo.html` (ou clique em **+ Cadastrar nova aula** no rodapé do índice).
 2. Preencha os campos. A página sugere o próximo número da aula quando a matéria já
    existe, e monta o caminho do arquivo sozinha.
-3. Copie o **bloco 1** e cole no final da lista em `dados/aulas.js`, antes do `];`.
-   Não esqueça da vírgula depois do bloco anterior.
-4. Copie o **bloco 2**, crie o arquivo no caminho indicado e cole o conteúdo lá.
-5. Escreva a aula e confira no índice.
+3. Clique em **Salvar aula**.
+
+Pronto: a página grava os dois arquivos sozinha — acrescenta o cadastro em
+`dados/aulas.js` e cria a página da aula em `materias/<materia>/`. Depois é só abrir
+o arquivo criado e escrever o conteúdo.
 
 Uma matéria nova não exige nenhuma configuração: basta digitar o nome dela no
-formulário que o filtro correspondente aparece sozinho no índice.
+formulário que a pasta é criada e o filtro correspondente aparece no índice.
+
+### O que esperar na primeira vez
+
+O navegador abre uma janela para você escolher a pasta do projeto (a pasta
+`meu-projeto-html`, aquela que tem o `index.html` dentro) e pede permissão para
+editá-la. A escolha fica lembrada, então nas vezes seguintes basta reconfirmar a
+permissão em um clique.
+
+A página recusa a pasta errada: se não encontrar `dados/aulas.js` dentro dela, avisa
+em vez de gravar em lugar nenhum.
+
+### Proteções
+
+- **Nunca sobrescreve** um arquivo de aula existente. Se o caminho já estiver
+  ocupado, ela avisa e não grava nada — nem a página, nem o catálogo.
+- Recusa cadastro duplicado (mesmo identificador ou mesmo arquivo).
+- Recusa campos obrigatórios vazios.
+- Grava a página da aula **antes** do catálogo. Se algo falhar no meio, sobra um
+  arquivo órfão inofensivo, em vez de um cadastro apontando para um arquivo que não
+  existe — que é justamente o link quebrado que queremos evitar.
+
+### Requisitos e modo manual
+
+A gravação automática usa a **File System Access API**, que hoje existe no Chrome e
+no Edge, mas não no Firefox nem no Safari. Nesses navegadores a página esconde o
+botão e abre o **modo manual** (copiar e colar os dois blocos), que funciona em
+qualquer lugar.
+
+Alguns navegadores também bloqueiam a escolha de pasta quando a página é aberta com
+duplo clique (endereço `file://`). Se isso acontecer, a página explica e sugere abrir
+o projeto por um servidor local — ou usar o modo manual.
 
 ### Campos do catálogo
 

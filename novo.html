@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cadastrar nova aula</title>
-<meta name="description" content="Formulário que gera o cadastro de uma aula nova para a biblioteca de estudos.">
+<meta name="description" content="Formulário que cadastra uma aula nova na biblioteca, gravando os arquivos direto na pasta do projeto.">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
 <main>
 
 <h1>Cadastrar nova aula</h1>
-<p>Preencha os campos e a página monta, sozinha, as duas coisas que você precisa: o bloco para colar no catálogo e o esqueleto do arquivo da aula.</p>
+<p>Preencha os campos e clique em salvar. A página grava os dois arquivos sozinha: o cadastro em <code>dados/aulas.js</code> e a página da aula em <code>materias/</code>.</p>
 
 <form id="form-aula" autocomplete="off">
 
@@ -57,24 +57,47 @@
 <input type="text" id="tags" placeholder="Ex: ipv6, enderecamento, redes">
 </div>
 
+<p class="previa">Vai criar: <code id="saida-caminho">…</code></p>
+
+<div class="acoes">
+<button type="button" id="salvar" class="botao">Salvar aula</button>
+<span id="estado-pasta" class="dica"></span>
+</div>
+
 </form>
 
-<h2>1. Cole este bloco no final da lista em <code>dados/aulas.js</code></h2>
+<div id="recado" class="recado" hidden></div>
+
+<div id="sem-suporte" class="aviso" hidden>
+<p><strong>Este navegador não consegue gravar os arquivos.</strong> A gravação automática usa a File System Access API, que hoje existe no Chrome e no Edge, mas não no Firefox nem no Safari.</p>
+<p>Nesses navegadores, use o modo manual abaixo — ele continua funcionando em qualquer lugar.</p>
+</div>
+
+<details id="modo-manual">
+<summary>Modo manual: copiar e colar</summary>
+
+<p>Se preferir fazer à mão, ou se a gravação automática não funcionar, use os dois blocos abaixo.</p>
+
+<h3>1. Cole no final da lista em <code>dados/aulas.js</code></h3>
 <p>Ele vai logo antes do <code>];</code> que fecha a lista. Não esqueça da vírgula depois do bloco anterior.</p>
 <div class="saida">
 <button type="button" class="botao botao-copiar" data-copiar="saida-catalogo">Copiar</button>
 <pre><code id="saida-catalogo"></code></pre>
 </div>
 
-<h2>2. Crie o arquivo <code id="saida-caminho">…</code></h2>
+<h3>2. Crie o arquivo da aula</h3>
 <p>Crie a pasta da matéria se ela ainda não existir, e cole o conteúdo abaixo dentro do arquivo novo.</p>
 <div class="saida">
 <button type="button" class="botao botao-copiar" data-copiar="saida-pagina">Copiar</button>
 <pre><code id="saida-pagina"></code></pre>
 </div>
 
-<h2>3. Confira</h2>
-<p>Abra o <a href="index.html">índice</a>. A aula nova deve aparecer no lugar certo, já respondendo à busca e ao filtro da matéria. Se não aparecer, quase sempre é vírgula faltando ou sobrando no <code>dados/aulas.js</code> — abra o console do navegador com <kbd>F12</kbd> que o erro aparece lá.</p>
+</details>
+
+<h2>Como funciona a gravação</h2>
+<p>Na primeira vez, o navegador abre uma janela para você escolher a pasta do projeto (a pasta <code>meu-projeto-html</code>, aquela que tem o <code>index.html</code> dentro) e pede sua permissão para editá-la. A permissão vale só para essa pasta e só enquanto a aba estiver aberta.</p>
+<p>A escolha fica lembrada, então nas próximas vezes basta confirmar a permissão em um clique, sem procurar a pasta de novo.</p>
+<p>A página <strong>nunca sobrescreve</strong> um arquivo de aula que já exista — se o caminho estiver ocupado, ela avisa e não grava nada.</p>
 
 </main>
 

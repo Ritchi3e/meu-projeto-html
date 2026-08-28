@@ -16,6 +16,17 @@
     --texto:        #2d3748;   /* cinza-escuro do texto            */
     --texto-suave:  #5a6673;   /* cinza dos subtitulos             */
     --cinza-claro:  #eef1f5;   /* fundo de codigo e etiquetas      */
+
+    /* respostas do cadastro */
+    --certo-fundo:  #e7f8f1;   /* deu certo                        */
+    --certo-borda:  #8fd9bd;
+    --certo-texto:  #14684d;
+    --erro-fundo:   #fdecec;   /* deu errado                       */
+    --erro-borda:   #f0b4b4;
+    --erro-texto:   #9b2226;
+    --aviso-fundo:  #fff4d1;   /* atencao                          */
+    --aviso-borda:  #e8cf8a;
+    --aviso-texto:  #8a6d00;
 }
 
 * {
@@ -499,6 +510,111 @@ kbd {
     border: 1px solid var(--borda);
     border-bottom-width: 2px;
     border-radius: 4px;
+}
+
+/* caminho do arquivo que vai ser criado, abaixo do formulario */
+.previa {
+    margin: 0.5rem 0 1rem;
+    font-size: 0.85rem;
+    color: var(--texto-suave);
+}
+
+.acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8rem;
+    padding-top: 0.5rem;
+}
+
+.acoes .botao {
+    padding: 0.7rem 1.4rem;
+    font-size: 1rem;
+}
+
+.botao:disabled {
+    cursor: progress;
+    opacity: 0.6;
+}
+
+/* resposta depois de tentar salvar */
+.recado {
+    margin: 1.2rem 0;
+    padding: 1rem 1.2rem;
+    border: 1px solid;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.recado-titulo {
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+}
+
+.recado ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.recado li + li {
+    margin-top: 0.3rem;
+}
+
+.recado p:last-child {
+    margin-bottom: 0;
+}
+
+.recado-certo {
+    color: var(--certo-texto);
+    background-color: var(--certo-fundo);
+    border-color: var(--certo-borda);
+}
+
+.recado-certo a {
+    color: var(--certo-texto);
+    font-weight: 600;
+}
+
+.recado-erro {
+    color: var(--erro-texto);
+    background-color: var(--erro-fundo);
+    border-color: var(--erro-borda);
+}
+
+.recado-aviso {
+    color: var(--aviso-texto);
+    background-color: var(--aviso-fundo);
+    border-color: var(--aviso-borda);
+}
+
+/* modo manual, recolhido por padrao */
+details {
+    margin: 1.5rem 0;
+    padding: 0.8rem 1.1rem;
+    background-color: var(--fundo);
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+}
+
+summary {
+    font-weight: 600;
+    cursor: pointer;
+}
+
+summary:focus-visible {
+    outline: 3px solid var(--verde);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+details[open] summary {
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--borda);
+}
+
+details h3:first-of-type {
+    margin-top: 0;
 }
 
 /* =========================================================
