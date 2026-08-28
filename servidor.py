@@ -80,8 +80,17 @@ def formatar_corpo(corpo):
     """
     texto = re.sub(r"(<(?:%s)\b[^>]*>)" % BLOCOS, r"\n\1", corpo)
     texto = re.sub(r"(</(?:%s)>)" % BLOCOS, r"\1\n", texto)
-    linhas = [linha.rstrip() for linha in texto.split("\n")]
-    return "\n".join(linha for linha in linhas if linha.strip())
+
+    saida = []
+    for linha in texto.split("\n"):
+        linha = linha.rstrip()
+        if not linha.strip():
+            continue
+        # linha em branco antes de cada titulo, para o arquivo respirar
+        if linha.lstrip().startswith(("<h2", "<h3", "<h4")) and saida:
+            saida.append("")
+        saida.append(linha)
+    return "\n".join(saida)
 
 
 def pagina_da_aula(titulo_completo, resumo, corpo, relativo):
