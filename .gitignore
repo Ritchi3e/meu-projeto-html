@@ -1,0 +1,12 @@
+# Lixo do Windows
+desktop.ini
+Thumbs.db
+ehthumbs.db
+
+# Lixo do macOS
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
