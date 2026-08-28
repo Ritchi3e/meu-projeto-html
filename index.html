@@ -3,27 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meu Projeto HTML - Aulas</title>
-<meta name="description" content="Biblioteca de aulas e anotações de estudos da faculdade em HTML, organizadas por matéria.">
+<title>Biblioteca de Aulas e Conteúdos Avulsos</title>
+<meta name="description" content="Biblioteca de aulas e anotações de estudos da faculdade em HTML, organizadas por matéria, com busca e filtro.">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<main>
+
+<header class="cabecalho">
 <h1>Biblioteca de Aulas e Conteúdos Avulsos</h1>
 <p>Este projeto é o meu caderno de estudos da faculdade em HTML. Cada aula que eu estudo vira uma página e cada matéria vira um capítulo aqui, com anotações e exemplos práticos.</p>
+</header>
 
-<h2>HTML na prática</h2>
-<ul class="aulas-list">
-<li><a href="materias/html-na-pratica/aula-01-introducao-ao-html.html">Aula 01 - Introdução ao HTML</a></li>
-<li><a href="materias/html-na-pratica/aula-02-introducao-ao-css.html">Aula 02 - Introdução ao CSS</a></li>
-</ul>
+<div class="barra-busca">
+<label class="apenas-leitor" for="busca">Buscar aula</label>
+<input type="search" id="busca" placeholder="Buscar por título, matéria ou tag..." autocomplete="off">
+<button type="button" id="limpar-busca" class="limpar" hidden aria-label="Limpar busca">&times;</button>
+</div>
 
-<h2>Redes de Computadores</h2>
-<ul class="aulas-list">
-<li><a href="materias/redes-de-computadores/aula-01-modelo-osi.html">Aula 01 - Modelo de Referência OSI e Encapsulamento de Dados</a></li>
-<li><a href="materias/redes-de-computadores/aula-02-encapsulamento.html">Aula 02 - Continuação do Encapsulamento</a></li>
-<li><a href="materias/redes-de-computadores/aula-03-tcp-ip-enderecamento.html">Aula 03 - Modelo de Referência TCP/IP e Endereçamento</a></li>
-</ul>
+<div id="filtros" class="filtros"></div>
+
+<p id="contador" class="contador" aria-live="polite"></p>
+
+<main>
+<div id="lista-aulas"></div>
+<p id="nenhum-resultado" class="vazio" hidden>Nenhuma aula encontrada. Tente outra palavra, ou volte para <strong>Todas</strong>.</p>
 </main>
+
+<noscript>
+<p class="aviso">O JavaScript está desativado, então a busca e os filtros não funcionam. A lista completa continua acessível abaixo:</p>
+<ul class="aulas-list">
+<li><a href="materias/html-na-pratica/aula-01-introducao-ao-html.html">HTML na prática &mdash; Aula 01 - Introdução ao HTML</a></li>
+<li><a href="materias/html-na-pratica/aula-02-introducao-ao-css.html">HTML na prática &mdash; Aula 02 - Introdução ao CSS</a></li>
+<li><a href="materias/redes-de-computadores/aula-01-modelo-osi.html">Redes de Computadores &mdash; Aula 01 - Modelo de Referência OSI</a></li>
+<li><a href="materias/redes-de-computadores/aula-02-encapsulamento.html">Redes de Computadores &mdash; Aula 02 - Encapsulamento de Dados</a></li>
+<li><a href="materias/redes-de-computadores/aula-03-tcp-ip-enderecamento.html">Redes de Computadores &mdash; Aula 03 - Modelo TCP/IP e Endereçamento</a></li>
+</ul>
+</noscript>
+
+<footer class="rodape">
+<a class="botao" href="novo.html">+ Cadastrar nova aula</a>
+</footer>
+
+<script src="dados/aulas.js"></script>
+<script src="assets/js/app.js"></script>
 </body>
 </html>

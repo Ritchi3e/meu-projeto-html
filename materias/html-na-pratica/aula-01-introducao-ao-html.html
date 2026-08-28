@@ -53,8 +53,33 @@
 <li><a href="https://developer.mozilla.org/pt-BR/docs/Web/HTML/Element/video" target="_blank" rel="noopener noreferrer">Tag de vídeo (&lt;video&gt;)</a></li>
 </ul>
 
-<h3>Atributos: adicionar informações e/ou configurações à uma tag</h3>
-<a href="https://github.com/Ritchi3e/meu-projeto-html/blob/main/materias/html-na-pratica/aula-01-introducao-ao-html.html">Ver site</a>
+<h2>Atributos: adicionar informações e configurações a uma tag</h2>
+<p>Atributos são informações extras escritas <strong>dentro da tag de abertura</strong>, no formato <code>nome="valor"</code>. Eles configuram o comportamento do elemento sem mudar o texto que aparece na tela.</p>
+<pre><code>&lt;a href="https://exemplo.com" target="_blank"&gt;Ver site&lt;/a&gt;</code></pre>
+<p>Nesse exemplo a tag é <code>&lt;a&gt;</code>, o texto visível é "Ver site" e os atributos são dois:</p>
+<ul>
+<li><code>href</code> - para onde o link leva. Sem ele, a tag <code>&lt;a&gt;</code> não vira link de verdade.</li>
+<li><code>target="_blank"</code> - abre o destino em uma nova aba.</li>
+</ul>
+
+<h3>Atributos que aparecem com mais frequência</h3>
+<ul>
+<li><code>href</code> - endereço de destino de um link (<code>&lt;a&gt;</code>).</li>
+<li><code>src</code> - caminho do arquivo a ser carregado, em <code>&lt;img&gt;</code> e <code>&lt;video&gt;</code>.</li>
+<li><code>alt</code> - texto alternativo da imagem, lido por leitores de tela e exibido se a imagem não carregar.</li>
+<li><code>class</code> - dá um nome ao elemento para ser estilizado pelo CSS. Pode se repetir na página.</li>
+<li><code>id</code> - identificador <strong>único</strong> na página.</li>
+<li><code>lang</code> - idioma do conteúdo, como o <code>lang="pt-BR"</code> lá no topo desta página.</li>
+</ul>
+
+<h3>Um exemplo de cada</h3>
+<pre><code>&lt;img src="foto.jpg" alt="Foto da minha mesa de estudos"&gt;
+&lt;p class="destaque"&gt;Parágrafo que o CSS vai pintar diferente&lt;/p&gt;
+&lt;section id="introducao"&gt;Trecho com identificador único&lt;/section&gt;</code></pre>
+
+<h3>Detalhe de segurança em links externos</h3>
+<p>Sempre que usar <code>target="_blank"</code>, acrescente também <code>rel="noopener noreferrer"</code>. Sem isso, a página aberta na nova aba ganha uma referência para a sua e consegue manipulá-la — é um golpe conhecido como <em>tabnabbing</em>. Repare que os links da seção anterior desta aula já seguem essa regra:</p>
+<pre><code>&lt;a href="https://exemplo.com" target="_blank" rel="noopener noreferrer"&gt;Ver site&lt;/a&gt;</code></pre>
 
 </main>
 </body>

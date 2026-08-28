@@ -103,12 +103,12 @@
 <h2>Estrutura do endereço IPv4</h2>
 <p>O endereço IPv4 é um protocolo da camada de rede. Existe um endereço lógico único em toda a rede. O endereço IPv4 tem um tamanho de <strong>4 bytes (32 bits)</strong>, no qual é realizada a segmentação dos bytes de um endereço IP em 4 campos, separados por 8 bits cada — os <strong>octetos</strong>, convertidos em número de base decimal.</p>
 <ul>
-<li>O menor número para hosts possível é <strong>0</strong>.</li>
-<li>O maior número de hosts possível é <strong>255</strong>.</li>
+<li>O menor valor possível em cada octeto é <strong>0</strong>.</li>
+<li>O maior valor possível em cada octeto é <strong>255</strong>.</li>
 <li>O menor endereço de rede possível é <strong>0.0.0.0</strong>.</li>
 <li>O maior endereço de rede possível é <strong>255.255.255.255</strong>.</li>
 </ul>
-<p>Em teoria, uma rede pode chegar a até <strong>4.294.967.296</strong> endereços (2³² ou 256⁴). Mas alguns endereços são reservados e não podem ser utilizados — é o caso do IPv4 de broadcast e do IPv4 da rede, que não são utilizados. Também existem diversos blocos de endereços reservados para finalidades específicas, como redes privadas, loopback e multicast.</p>
+<p>Em teoria, o espaço de endereçamento IPv4 inteiro comporta <strong>4.294.967.296</strong> endereços (2³² ou 256⁴). Mas alguns endereços são reservados e não podem ser utilizados — é o caso do IPv4 de broadcast e do IPv4 da rede, que não são utilizados. Também existem diversos blocos de endereços reservados para finalidades específicas, como redes privadas, loopback e multicast.</p>
 
 <h3>IPv4 x IPv6</h3>
 <p>Com o crescimento da internet, o espaço de endereçamento IPv4 tornou-se insuficiente para atender a quantidade de dispositivos conectados pelo mundo. Com isso, foi criado o <strong>IPv6</strong>, que utiliza 128 bits para representar os endereços.</p>
@@ -198,7 +198,7 @@
 
 <h3>Notação CIDR (prefixo)</h3>
 <p>É um método menos complicado de identificar um endereço de máscara de rede. O comprimento do prefixo é o número de bits que estão definidos como 1 na máscara de rede. É escrito em notação de barra — basta contar o número de bits em 1 na máscara de rede e adicionar uma barra antes do número.</p>
-<p>Sempre que você ouvir algo como "minha rede é um /24" ou "minha rede está em um /24", significa que a rede possui 254 endereços de hosts e é uma rede da classe C, pois há 3 octetos (24 bits) identificados como 1 na máscara de rede.</p>
+<p>Sempre que você ouvir algo como "minha rede é um /24" ou "minha rede está em um /24", significa que há 3 octetos (24 bits) marcados como 1 na máscara, sobrando 254 endereços de host. Esse é o tamanho padrão de uma rede classe C, mas atenção: o CIDR é justamente <em>classless</em> — o prefixo define o tamanho da rede sozinho, sem depender de classe.</p>
 
 <h2>Tipos de endereço em uma rede</h2>
 <p>Dentro de uma rede de computadores, sempre haverá 3 tipos de endereços IPv4:</p>

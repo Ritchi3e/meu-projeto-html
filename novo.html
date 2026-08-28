@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastrar nova aula</title>
+<meta name="description" content="Formulário que gera o cadastro de uma aula nova para a biblioteca de estudos.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav><a href="index.html">&larr; Voltar para o início</a></nav>
+<main>
+
+<h1>Cadastrar nova aula</h1>
+<p>Preencha os campos e a página monta, sozinha, as duas coisas que você precisa: o bloco para colar no catálogo e o esqueleto do arquivo da aula.</p>
+
+<form id="form-aula" autocomplete="off">
+
+<div class="campo">
+<label for="titulo">Título da aula</label>
+<input type="text" id="titulo" placeholder="Ex: Endereçamento IPv6 na prática" required>
+</div>
+
+<div class="campo-duplo">
+<div class="campo">
+<label for="materia">Matéria</label>
+<input type="text" id="materia" list="materias-existentes" placeholder="Ex: Redes de Computadores" required>
+<datalist id="materias-existentes"></datalist>
+</div>
+<div class="campo campo-estreito">
+<label for="numero">Nº da aula</label>
+<input type="number" id="numero" min="1" step="1" value="1" required>
+</div>
+</div>
+
+<div class="campo-duplo">
+<div class="campo">
+<label for="data">Data da anotação</label>
+<input type="date" id="data" required>
+</div>
+<div class="campo campo-estreito">
+<label for="status">Status</label>
+<select id="status">
+<option value="pronto">pronto</option>
+<option value="rascunho">rascunho</option>
+</select>
+</div>
+</div>
+
+<div class="campo">
+<label for="resumo">Resumo <span class="dica">uma linha sobre o conteúdo</span></label>
+<input type="text" id="resumo" placeholder="Ex: Como funciona o endereçamento IPv6 e por que ele substitui o IPv4." required>
+</div>
+
+<div class="campo">
+<label for="tags">Tags <span class="dica">separadas por vírgula, usadas na busca</span></label>
+<input type="text" id="tags" placeholder="Ex: ipv6, enderecamento, redes">
+</div>
+
+</form>
+
+<h2>1. Cole este bloco no final da lista em <code>dados/aulas.js</code></h2>
+<p>Ele vai logo antes do <code>];</code> que fecha a lista. Não esqueça da vírgula depois do bloco anterior.</p>
+<div class="saida">
+<button type="button" class="botao botao-copiar" data-copiar="saida-catalogo">Copiar</button>
+<pre><code id="saida-catalogo"></code></pre>
+</div>
+
+<h2>2. Crie o arquivo <code id="saida-caminho">…</code></h2>
+<p>Crie a pasta da matéria se ela ainda não existir, e cole o conteúdo abaixo dentro do arquivo novo.</p>
+<div class="saida">
+<button type="button" class="botao botao-copiar" data-copiar="saida-pagina">Copiar</button>
+<pre><code id="saida-pagina"></code></pre>
+</div>
+
+<h2>3. Confira</h2>
+<p>Abra o <a href="index.html">índice</a>. A aula nova deve aparecer no lugar certo, já respondendo à busca e ao filtro da matéria. Se não aparecer, quase sempre é vírgula faltando ou sobrando no <code>dados/aulas.js</code> — abra o console do navegador com <kbd>F12</kbd> que o erro aparece lá.</p>
+
+</main>
+
+<script src="dados/aulas.js"></script>
+<script src="assets/js/novo.js"></script>
+</body>
+</html>
