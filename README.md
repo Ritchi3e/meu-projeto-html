@@ -35,8 +35,17 @@ Uma matéria nova não exige configuração nenhuma: digite o nome e a pasta é 
 
 ### Editar uma aula que já existe
 
-Passe o mouse sobre o cartão no índice e clique em **Editar**. Ou abra a aula e
-clique em **Editar** ali no topo.
+Cada cartão do índice tem os botões **Editar** e **Excluir** no canto direito. Dentro
+da própria aula também existe um link **Editar** no topo.
+
+### Excluir uma aula
+
+Clique em **Excluir** no cartão e confirme. A aula sai do índice, mas **o arquivo não
+é apagado**: ele vai para a pasta `lixeira/`, mantendo o caminho original. Se você se
+arrepender, arraste de volta para `materias/` e cadastre a aula de novo.
+
+A pasta `lixeira/` fica fora do Git (está no `.gitignore`), então ela é só uma rede de
+segurança local.
 
 ### A barra de ferramentas
 
@@ -117,6 +126,27 @@ Cada palavra digitada precisa aparecer no título, resumo, matéria ou tags — 
 
 As cores ficam todas em variáveis CSS no bloco `:root` do `style.css`. Para mudar o
 tema do site inteiro, basta trocar os valores desse bloco.
+
+## Se der problema
+
+**"O servidor da biblioteca não está no ar"** — o `iniciar.bat` não está rodando, ou a
+janela preta foi fechada. Abra de novo e recarregue a página.
+
+**"O servidor respondeu vazio"** ou **"respondeu algo inesperado"** — tem outro
+programa ocupando a porta 8000, e é ele que está respondendo no lugar da biblioteca.
+Feche a janela preta, confira quem está na porta e abra de novo:
+
+```bash
+netstat -ano | findstr :8000
+```
+
+Se aparecer alguma linha em `LISTENING` mesmo com a janela preta fechada, é um
+processo antigo travado. Anote o número no fim da linha e encerre com
+`taskkill /F /PID <numero>`.
+
+**A página abre mas nada salva** — confira o endereço. Precisa ser
+`http://localhost:8000/`, e não um caminho começando com `file:///`. Abrindo o arquivo
+com duplo clique, a leitura funciona mas o cadastro e o editor não têm como gravar.
 
 ## Próximos passos
 

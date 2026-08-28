@@ -15,6 +15,7 @@ Para iniciar: clique duas vezes em iniciar.bat, ou rode
 
 import json
 import re
+import traceback
 import unicodedata
 import webbrowser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -26,6 +27,9 @@ PORTA = 8000
 # so estes lugares podem ser gravados
 CATALOGO = RAIZ / "dados" / "aulas.js"
 PASTA_MATERIAS = RAIZ / "materias"
+
+# aula excluida vai para ca em vez de sumir de vez
+LIXEIRA = RAIZ / "lixeira"
 
 
 # ---------------------------------------------------------------
@@ -137,6 +141,34 @@ def acrescentar_no_catalogo(bloco):
     CATALOGO.write_text(antes + virgula + "\n" + bloco + "\n" + depois, encoding="utf-8")
 
 
+def remover_do_catalogo(relativo):
+    """Tira do catalogo o bloco cujo campo arquivo aponta para este caminho."""
+    texto = CATALOGO.read_text(encoding="utf-8")
+    marca = 'arquivo: "%s"' % relativo
+    posicao = texto.find(marca)
+    if posicao == -1:
+        return False
+
+    inicio = texto.rfind("\n  {", 0, posicao)
+    fim = texto.find("\n  }", posicao)
+    if inicio == -1 or fim == -1:
+        raise ValueError("Nao consegui localizar o bloco inteiro em dados/aulas.js")
+    fim += len("\n  }")
+
+    antes = texto[:inicio]
+    depois = texto[fim:]
+
+    if depois.lstrip().startswith(","):
+        # tinha bloco depois: a virgula que os separava sai junto
+        depois = depois.lstrip()[1:]
+    else:
+        # era o ultimo bloco: a virgula sobrando fica no bloco anterior
+        antes = antes.rstrip().rstrip(",")
+
+    CATALOGO.write_text(antes + depois, encoding="utf-8")
+    return True
+
+
 def bloco_do_catalogo(aula):
     def aspas(v):
         return '"%s"' % str(v).replace("\\", "\\\\").replace('"', '\\"')
@@ -228,6 +260,45 @@ def salvar_aula(dados):
     return {"arquivo": relativo}
 
 
+def excluir_aula(dados):
+    """
+    Tira a aula do catalogo e move o arquivo para a pasta lixeira/.
+
+    De proposito nao apaga de vez: se voce excluir sem querer, o arquivo
+    continua la para ser arrastado de volta.
+    """
+    relativo = str(dados.get("arquivo", ""))
+    destino = caminho_seguro(relativo)
+
+    if not destino.exists():
+        # o arquivo ja sumiu, mas o cadastro pode ter sobrado
+        if remover_do_catalogo(relativo):
+            return {"arquivo": relativo, "lixeira": None,
+                    "aviso": "O arquivo ja nao existia; removi so o cadastro."}
+        raise ValueError("Nao encontrei nem o arquivo nem o cadastro de %s." % relativo)
+
+    alvo = LIXEIRA / Path(relativo)
+    alvo.parent.mkdir(parents=True, exist_ok=True)
+
+    # nao sobrescreve algo que ja foi excluido antes com o mesmo nome
+    contador = 2
+    while alvo.exists():
+        alvo = alvo.with_name("%s-%d%s" % (alvo.stem, contador, alvo.suffix))
+        contador += 1
+
+    destino.replace(alvo)
+    remover_do_catalogo(relativo)
+
+    # se a pasta da materia ficou vazia, ela vai junto
+    try:
+        if not any(destino.parent.iterdir()):
+            destino.parent.rmdir()
+    except OSError:
+        pass
+
+    return {"arquivo": relativo, "lixeira": str(alvo.relative_to(RAIZ)).replace("\\", "/")}
+
+
 # ---------------------------------------------------------------
 # SERVIDOR
 # ---------------------------------------------------------------
@@ -238,9 +309,21 @@ class Manipulador(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(RAIZ), **kwargs)
 
     def log_message(self, formato, *args):
-        # so mostra os salvamentos, para o terminal nao virar poluicao
-        if "api" in str(args):
-            super().log_message(formato, *args)
+        """
+        So mostra as chamadas de api, para o terminal nao virar poluicao.
+
+        O try existe por um motivo serio: send_response() chama este metodo
+        DEPOIS de escrever a linha de status. Se escrever no terminal falhar
+        aqui (console fechado, problema de acentuacao no Windows), a resposta
+        morre no meio e o navegador recebe um corpo vazio - que aparece como
+        "Unexpected end of JSON input". Falhar ao imprimir um log nunca pode
+        derrubar a resposta.
+        """
+        try:
+            if "api" in str(args):
+                super().log_message(formato, *args)
+        except Exception:
+            pass
 
     def _responder(self, codigo, dados):
         corpo = json.dumps(dados, ensure_ascii=False).encode("utf-8")
@@ -256,8 +339,20 @@ class Manipulador(SimpleHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         super().end_headers()
 
+    def do_GET(self):
+        # ping usado pelas paginas para saber se o servidor certo esta no ar
+        if self.path == "/api/status":
+            self._responder(200, {"ok": True, "servidor": "biblioteca", "raiz": str(RAIZ)})
+            return
+        super().do_GET()
+
     def do_POST(self):
-        if self.path not in ("/api/criar", "/api/salvar"):
+        acoes = {
+            "/api/criar": criar_aula,
+            "/api/salvar": salvar_aula,
+            "/api/excluir": excluir_aula,
+        }
+        if self.path not in acoes:
             self._responder(404, {"erro": "Endereço desconhecido: %s" % self.path})
             return
 
@@ -269,15 +364,16 @@ class Manipulador(SimpleHTTPRequestHandler):
             return
 
         try:
-            if self.path == "/api/criar":
-                resultado = criar_aula(dados)
-            else:
-                resultado = salvar_aula(dados)
+            resultado = acoes[self.path](dados)
             self._responder(200, {"ok": True, **resultado})
         except ValueError as erro:
             self._responder(400, {"erro": str(erro)})
         except Exception as erro:
-            self._responder(500, {"erro": "Erro inesperado: %s" % erro})
+            # qualquer falha inesperada vira uma resposta JSON de erro, com o
+            # detalhe no terminal - nunca uma resposta vazia
+            traceback.print_exc()
+            self._responder(500, {"erro": "Erro inesperado no servidor: %s: %s"
+                                          % (type(erro).__name__, erro)})
 
 
 def main():

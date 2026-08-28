@@ -127,31 +127,21 @@ async function salvar(automatico) {
     limparEstrutura();
 
     try {
-        const resposta = await fetch("/api/salvar", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                arquivo: caminhoArquivo,
-                titulo: tituloCompleto,
-                resumo: resumoAula,
-                corpo: editor.innerHTML
-            })
+        await chamarApi("/api/salvar", {
+            arquivo: caminhoArquivo,
+            titulo: tituloCompleto,
+            resumo: resumoAula,
+            corpo: editor.innerHTML
         });
-        const resultado = await resposta.json();
-        if (!resposta.ok) throw new Error(resultado.erro || "erro do servidor");
 
         temMudanca = false;
         marcarEstado("salvo", "estado-ok");
         esconderRecado();
     } catch (erro) {
         marcarEstado("não salvou", "estado-erro");
-        const semServidor = erro instanceof TypeError;
-        mostrarRecado("erro", "Não consegui salvar.", semServidor ? [
-            "O servidor não respondeu.",
-            "Feche esta aba, clique duas vezes em iniciar.bat na pasta do projeto, " +
-            "e abra a biblioteca pelo endereço http://localhost:8000/",
-            "Seu texto continua aqui na tela — não feche antes de salvar."
-        ] : [erro.message]);
+        const aviso = explicar(erro);
+        mostrarRecado("erro", aviso.titulo,
+            aviso.linhas.concat(["Seu texto continua aqui na tela — não feche antes de salvar."]));
     } finally {
         salvando = false;
     }

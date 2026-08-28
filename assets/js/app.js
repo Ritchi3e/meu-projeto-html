@@ -87,7 +87,7 @@ function cartaoDaAula(aula) {
         return '<span class="tag">' + escapar(tag) + "</span>";
     }).join("");
 
-    // o link de editar fica fora do cartao: um <a> nao pode conter outro
+    // editar e excluir ficam fora do cartao: um <a> nao pode conter outro
     return '' +
         '<li>' +
             '<a class="cartao-link" href="' + escapar(aula.arquivo) + '">' +
@@ -104,8 +104,12 @@ function cartaoDaAula(aula) {
                     '<span class="tags">' + tags + '</span>' +
                 '</span>' +
             '</a>' +
-            '<a class="cartao-editar" href="editor.html?arquivo=' +
-                encodeURIComponent(aula.arquivo) + '">Editar</a>' +
+            '<span class="cartao-acoes">' +
+                '<a class="cartao-editar" href="editor.html?arquivo=' +
+                    encodeURIComponent(aula.arquivo) + '">Editar</a>' +
+                '<button type="button" class="cartao-excluir" data-arquivo="' +
+                    escapar(aula.arquivo) + '">Excluir</button>' +
+            '</span>' +
         '</li>';
 }
 
@@ -172,6 +176,56 @@ function render() {
 }
 
 /* ---------------------------------------------------------
+   RECADOS E EXCLUSAO
+   --------------------------------------------------------- */
+
+function mostrarRecado(tipo, titulo, linhas) {
+    const alvo = document.getElementById("recado");
+    let html = '<p class="recado-titulo">' + escapar(titulo) + "</p><ul>";
+    linhas.forEach(function (linha) {
+        html += "<li>" + escapar(linha) + "</li>";
+    });
+    alvo.className = "recado recado-" + tipo;
+    alvo.innerHTML = html + "</ul>";
+    alvo.hidden = false;
+    alvo.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+async function excluir(arquivo, botao) {
+    const aula = AULAS.find(function (a) { return a.arquivo === arquivo; });
+    if (!aula) return;
+
+    const certeza = window.confirm(
+        'Excluir a aula "' + aula.titulo + '"?\n\n' +
+        "O arquivo vai para a pasta lixeira/ do projeto, então dá para " +
+        "recuperar depois arrastando de volta."
+    );
+    if (!certeza) return;
+
+    botao.disabled = true;
+    botao.textContent = "Excluindo…";
+
+    try {
+        const resultado = await chamarApi("/api/excluir", { arquivo: arquivo });
+
+        // tira da lista da memoria e redesenha, sem precisar recarregar
+        const posicao = AULAS.indexOf(aula);
+        if (posicao !== -1) AULAS.splice(posicao, 1);
+        render();
+
+        mostrarRecado("certo", '"' + aula.titulo + '" foi excluída.',
+            resultado.lixeira
+                ? ["O arquivo está em " + resultado.lixeira + ", caso você se arrependa."]
+                : [resultado.aviso || "O cadastro foi removido."]);
+    } catch (erro) {
+        botao.disabled = false;
+        botao.textContent = "Excluir";
+        const aviso = explicar(erro);
+        mostrarRecado("erro", aviso.titulo, aviso.linhas);
+    }
+}
+
+/* ---------------------------------------------------------
    LIGACOES COM A PAGINA
    --------------------------------------------------------- */
 
@@ -210,6 +264,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!chip) return;
         estado.materia = chip.dataset.materia;
         render();
+    });
+
+    // mesma ideia para os botoes de excluir dos cartoes
+    document.getElementById("lista-aulas").addEventListener("click", function (evento) {
+        const botao = evento.target.closest(".cartao-excluir");
+        if (!botao) return;
+        evento.preventDefault();
+        excluir(botao.dataset.arquivo, botao);
     });
 
     render();

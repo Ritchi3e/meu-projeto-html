@@ -93,29 +93,14 @@ async function criar() {
     botao.textContent = "Criando…";
 
     try {
-        const resposta = await fetch("/api/criar", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(aula)
-        });
-        const resultado = await resposta.json();
-        if (!resposta.ok) throw new Error(resultado.erro || "erro do servidor");
-
+        const resultado = await chamarApi("/api/criar", aula);
         // aula criada: vai direto escrever
         window.location.href = "editor.html?arquivo=" + encodeURIComponent(resultado.arquivo);
     } catch (erro) {
         botao.disabled = false;
         botao.textContent = "Criar e escrever";
-
-        if (erro instanceof TypeError) {
-            mostrarRecado("erro", "O servidor não respondeu.", [
-                "Para cadastrar e salvar aulas, o servidor precisa estar rodando.",
-                "Clique duas vezes em iniciar.bat na pasta do projeto e abra a " +
-                "biblioteca pelo endereço http://localhost:8000/"
-            ]);
-        } else {
-            mostrarRecado("erro", "Não consegui criar a aula.", [erro.message]);
-        }
+        const aviso = explicar(erro);
+        mostrarRecado("erro", aviso.titulo, aviso.linhas);
     }
 }
 
@@ -123,9 +108,17 @@ async function criar() {
    LIGACOES COM A PAGINA
    --------------------------------------------------------- */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
     preencherMaterias();
+
+    // avisa logo, antes de o usuario preencher tudo a toa
+    if (!await servidorNoAr()) {
+        mostrarRecado("aviso", "O servidor da biblioteca não está no ar.", [
+            "Você consegue preencher, mas o botão de criar vai falhar.",
+            "Na pasta do projeto, clique duas vezes em iniciar.bat e recarregue esta página."
+        ]);
+    }
 
     // data de hoje ja preenchida
     const hoje = new Date();

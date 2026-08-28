@@ -625,28 +625,29 @@ ul.aulas-list li {
     position: relative;
 }
 
-/* sobe a especificidade para vencer a regra do cartao acima */
-ul.aulas-list a.cartao-editar {
+.cartao-acoes {
     position: absolute;
     top: 0.7rem;
     right: 0.8rem;
+    display: flex;
+    gap: 0.3rem;
+}
+
+/* a especificidade extra vence a regra do cartao (ul.aulas-list a) */
+ul.aulas-list a.cartao-editar,
+.cartao-acoes .cartao-excluir {
     display: inline-block;
     padding: 0.2rem 0.6rem;
     font-size: 0.75rem;
+    font-family: inherit;
     font-weight: 600;
     color: var(--texto-suave);
     background-color: var(--cartao);
     border: 1px solid var(--borda);
     border-radius: 6px;
-    opacity: 0;
-    transition: opacity 0.15s;
-}
-
-/* so aparece quando o mouse esta no cartao - ou sempre, no celular
-   e para quem navega por teclado */
-ul.aulas-list li:hover a.cartao-editar,
-ul.aulas-list a.cartao-editar:focus-visible {
-    opacity: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.15s, background-color 0.15s, border-color 0.15s;
 }
 
 ul.aulas-list a.cartao-editar:hover {
@@ -655,15 +656,35 @@ ul.aulas-list a.cartao-editar:hover {
     border-color: var(--verde);
 }
 
-@media (hover: none) {
-    ul.aulas-list a.cartao-editar {
-        opacity: 1;
-    }
+/* excluir e destrutivo: fica vermelho ao passar o mouse, para nao
+   ser confundido com o editar que esta do lado */
+.cartao-acoes .cartao-excluir:hover {
+    color: var(--erro-texto);
+    background-color: var(--erro-fundo);
+    border-color: var(--erro-borda);
 }
 
-/* deixa espaco para o botao nao cobrir o titulo */
+.cartao-acoes .cartao-excluir:disabled {
+    cursor: progress;
+    opacity: 0.6;
+}
+
+/* deixa espaco para os botoes nao cobrirem o titulo */
 .cartao-topo {
-    padding-right: 4.5rem;
+    padding-right: 9rem;
+}
+
+/* em tela estreita os botoes saem de cima do texto e vao para baixo */
+@media (max-width: 520px) {
+    .cartao-acoes {
+        position: static;
+        margin-top: 0.5rem;
+        padding: 0 0.2rem;
+    }
+
+    .cartao-topo {
+        padding-right: 0;
+    }
 }
 
 /* =========================================================
