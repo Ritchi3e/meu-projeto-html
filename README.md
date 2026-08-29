@@ -7,19 +7,37 @@ O índice tem busca e filtro por matéria, e as aulas são escritas em um editor
 barra de ferramentas, parecido com o Word — o que você escreve já aparece do jeito
 que vai ficar na página. Ao salvar, o arquivo é gravado direto no projeto.
 
+## Cola de comandos
+
+| O que fazer | Como |
+|---|---|
+| **Iniciar** | Duplo clique em `iniciar.bat` |
+| **Iniciar pelo terminal** | `py servidor.py` |
+| **Abrir no navegador** | `http://localhost:8000/` — isso é um **endereço**, vai na barra do navegador, não no terminal |
+| **Parar** | <kbd>Ctrl</kbd>+<kbd>C</kbd> no terminal, ou fechar a janela |
+| **Parar um servidor travado** | veja abaixo |
+
+Quando a janela foi fechada mas a porta 8000 continua ocupada, descubra quem está lá:
+
+```bash
+netstat -ano | findstr :8000
+```
+
+Pegue o número da **última coluna** da linha que diz `LISTENING` e encerre:
+
+```bash
+taskkill /F /PID 1234
+```
+
+(troque `1234` pelo número que apareceu)
+
 ## Como usar
 
 **Clique duas vezes em `iniciar.bat`.** Uma janela preta abre e o navegador vai
 sozinho para a biblioteca.
 
 Deixe a janela preta aberta enquanto estiver estudando — é ela que grava os
-arquivos. Para parar, feche a janela.
-
-Se preferir o terminal:
-
-```bash
-python servidor.py
-```
+arquivos.
 
 ### Escrever uma aula nova
 

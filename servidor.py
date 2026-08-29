@@ -391,22 +391,37 @@ def main():
     endereco = "http://localhost:%d/" % PORTA
     servidor = ThreadingHTTPServer(("127.0.0.1", PORTA), Manipulador)
 
-    print("=" * 58)
-    print("  Biblioteca de Estudos rodando")
-    print("=" * 58)
-    print("  Abra no navegador:  %s" % endereco)
-    print("  Pasta do projeto:   %s" % RAIZ)
+    linha = "=" * 62
     print()
-    print("  Deixe esta janela aberta enquanto estiver estudando.")
-    print("  Para parar: feche a janela ou aperte Ctrl+C.")
-    print("=" * 58)
+    print(linha)
+    print("   BIBLIOTECA DE ESTUDOS  -  no ar")
+    print(linha)
+    print()
+    print("   ABRIR NO NAVEGADOR")
+    print("      %s" % endereco)
+    print("      (o navegador deve abrir sozinho em instantes)")
+    print()
+    print("   PARAR O SERVIDOR")
+    print("      Ctrl+C  aqui nesta janela")
+    print("      ou simplesmente feche a janela")
+    print()
+    print(linha)
+    print("   Deixe esta janela aberta enquanto estiver estudando.")
+    print("   E ela que grava as aulas no projeto.")
+    print()
+    print("   Pasta: %s" % RAIZ)
+    print(linha)
     print()
 
     webbrowser.open(endereco)
     try:
         servidor.serve_forever()
     except KeyboardInterrupt:
-        print("\nServidor encerrado.")
+        print()
+        print("   Servidor encerrado. Pode fechar esta janela.")
+        print("   Para voltar: duplo clique em iniciar.bat")
+        print("   ou, no terminal:  py servidor.py")
+        print()
 
 
 if __name__ == "__main__":
