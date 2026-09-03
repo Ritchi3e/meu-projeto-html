@@ -75,5 +75,16 @@ const AULAS = [
     resumo: "As camadas do modelo TCP/IP, portas dos principais protocolos, endereçamento IPv4 e IPv6, classes, NAT, máscaras e sub-redes.",
     arquivo: "materias/redes-de-computadores/aula-03-tcp-ip-enderecamento.html",
     status: "pronto"
+  },
+  {
+    id: "portu-01-teste",
+    titulo: "teste",
+    materia: "portu",
+    aula: 1,
+    data: "2026-08-31",
+    tags: ["adsd"],
+    resumo: "asda",
+    arquivo: "materias/portu/aula-01-teste.html",
+    status: "rascunho"
   }
 ];
